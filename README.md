@@ -4,7 +4,7 @@ This will be the working git repository containing all documentation (tex files,
 
 ## Useful Links
 
-General brainstorming doc](https://docs.google.com/document/d/15wyLm1f_vfKTtkXsonMv67GspUREVvMZEw6X1BMCESQ/edit?tab=t.0)
+[General brainstorming doc](https://docs.google.com/document/d/15wyLm1f_vfKTtkXsonMv67GspUREVvMZEw6X1BMCESQ/edit?tab=t.0)
 
 [Google doc link for updated MRD and ERD](https://docs.google.com/document/d/1tPsG1f8iEBiSaBPeFTgdizXF1T_pHfBg9JGMEwuBkTs/edit?tab=t.0)
 
