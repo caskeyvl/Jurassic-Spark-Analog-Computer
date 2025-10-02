@@ -7,38 +7,38 @@ This will be the working git repository containing all documentation (tex files,
 ### Create new branch for new work
 
 If you want to create a new branch for a new aspect of the project (i.e. pcb/integrator_module), run the following commands: 
-'''
+```
 git checkout main			# switch to main branch
 git pull origin main			# update local main
 git checkout -b <branch-name> 		# create branch <branch-name>, and switch to branch
-'''
+```
 
 ### Working on an existing branch
 
 If you want to continue work on an existing branch, run the following commands: 
 
-'''
+```
 git checkout <branch-name>		# switch to existing branch
 git pull origin <branch-name> 		# update local with current branch state
-'''
+```
 
 ### Committing and pushing changes
 
 As you work, if you finish a file (e.g. integrator_sim.wxsch) and want to add it to the branch, run the following commands:
 
-'''
+```
 git add <files> 
 git commit -m "Commit message"
 git push origin <branch-name>
-'''
+```
 
 So, for example, if I finished the integrator simulation using SIMetrix, and want to add that to the spice branch: 
 
-''' 
+``` 
 git add integrator_sim.wxsch
 git commit -m "integrator spice simulation added"
 git push origin spice
-'''
+```
 
 ### Work being finished/pull requests
 
