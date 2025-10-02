@@ -42,12 +42,12 @@ git push origin spice
 
 ### Work being finished/pull requests
 
-If you have finished work on a branch, and that branch is ready to be merged to the main branch, follow these steps:
+If you have finished work on a branch, and feel that branch is ready to be merged to main, follow these steps: 
 
 1. Go to GitHub repository → "Compare & pull request"→ fill in the description
 2. Assign Logan Caskey as the reviewer
 
-At this point Logan will go through the pull requests that have been made, and make the full merge to main if branch is ready to do so.
+At this point, I (Logan) will go through the pull requests that have been made, and make the full merge to main if branch is ready to do so.
 
 ### Important notes
 
