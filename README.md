@@ -1,9 +1,7 @@
 # Jurassic Spark Analog Computer
-===
 This will be the working git repository containing all documentation (tex files, powerpoints, planning documents, etc) as well as any necessary design files for the analog computer.
 
 ## Repository Usage
-===
 
 ### First time usage/cloning
 To begin working on this repository, first make sure that you have properly cloned the repository using the following command: 
