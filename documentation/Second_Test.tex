@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+
+%-----------------------------
+% Packages
+%-----------------------------
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{float}
+
+\title{Saturation Sensing Test Plan}
+\author{Jurrasic Spark Senior Design Team}
+
+%-----------------------------
+% Document
+%-----------------------------
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+%-----------------------------
+\section{Introduction}
+
+This document aims to outline a testing protocol for rapid reproduction and verification of the portion of the modules within our analog computer that detect when an op-amp is being driven to saturation. We will first discuss the circuit design and ideal operations, then follow it up with the actual circuit, discussing acceptable margins for the ciruit, and realistic operating conditions.
+
+%-----------------------------
+\newpage
+\section{Circuit Design}
+
+This circuit at it's core is a simple window comparator circuit, with a few caveats. If you were to look up a window comparator circuit online, they are typically shown to be made with op-amps, and have active-high logic. In our design, we use LM393 comparators, which are active low devices and provide a sink for current when the device is active. Below is the circuit design. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=.25]{Images/sat_sensing_circuit.png}
+	\caption{Saturation Sensing Circuit}
+\end{figure}
+
+As you can see, there are a good amount of voltage dividers included in this circuit. This is due to the fact that the LM393 comparators can only accept input voltages up to $VCC-1.5V$, meaning that since they are powered by our system voltage of $24V$, the maximum voltage that is allowable on inputs is $22.5$ volts. To counteract this, we divide our input voltage by 2, meaning our input voltages range from $0-12V$. We also account for this in generating our reference voltages. The saturation sensing triggers when outputs are within $0.5V$ of it's maximum or minimum, i.e. it will trigger when voltages are either at $0.5V$, or $23.5V$. Thus, we calculate our resistance values for generating the reference voltages to be such that $V_{ref}^+ = 11.75V$ and $V_{ref}^- = .25V$. Note that the resistances for generating the $11.75V$ reference voltage are not typical resistor values, and require the use of trimming potentiometers to get accurate resistances.
+
+The FILN LED acts as a pull up resistor in this situation, and there is no series current-limiting resistance with this LED as the LED we chose is a self-contained unit, i.e. they already include a current limiting resistor in the package itself. The $330k\Omega$ resistors are to provide slight hysteresis to the circuit, minimizing comparator chatter and thus helping the LED's to not flicker. 
+
+The comparators work by comparing the voltages seen at the non-inverting ($V+$) and inverting ($V-$) nodes, and if $V+ > V-$, the LM393 is "off" and effectively acts like an open circuit. If $V- > V+$, the LM393 "turns on", and effectively acts like a short circuit to ground, i.e. it sinks current. This allows current to flow through the LED and gets dumped through the LM393 to ground, completing the circuit and turning the LED on. The LED itself when connected directly to 12 volts pulls $3.4 mA$ of current, which is well within acceptable ranges for the LM393 to sink, and in actuality due to the offset output voltage when the LM393 is "on", the LED will actually consume slightly less current, and is not a point of consideration for this testing plan. 
+
+%----------------------------
+\newpage
+\section{Testing Protocol}
+
+This testing protocol assumes that the circuit has already been built, and omits the steps required to build the circuit itself. We also will omit the steps for building a circuit to generate a 12 volt line for the pullup voltage, however it is required to have this 12 volt line for testing. We recommend building a simple voltage divider circuit and buffering the output with a voltage follower circuit for a nice, steady 12 volts that's somewhat resistent to any transients experienced in the supply line (which is extremely unlikely) given this setup). We also recommend using a potentiometer connected to the 24 volt line to easily and quickly test on our entire 0-24 volt range. Given these prerequisites, the steps to the test plan are as follows: 
+
+\begin{enumerate} 
+	\item Power on your 24 volt supply.
+	\item Verify that the voltage divider circuit for generating $12V$ is working correctly, and you have an even $12 \pm .05 mV$ line. 
+	\item Verify that your reference voltages are within $\pm 25 mV$ of the ideal value (note that this is the biggest inconsistency that will be seen, as resistors will have innate innacuracy/tolerances that cause the voltage division to be slightly less accurate, however this is more than ok for this application). 
+	\item With reference voltages and 12 volt line verified, use a potentiometer hooked up to the 24 volt power, with its middle (output) pin connected to the input of the saturation sensing circuit.
+	\item First we will test the middle range of voltages (i.e. $0.5V < V_{in} < 23.5V$). With $V_{in}$ in this range, verify that the output of the LM393 comparators doesn't ever get less than $~10V$. As $V_{in}$ approaches $11.5V$, the output voltage is higher than as $V_{in}$ approaches $0V$, therefore the "low-side" detection is much more important to verify that this holds. The LED will turn on with output voltages as high as $~7.8V$, therefore the absolute minimum accepted output voltage for this needs to exceed this with headroom, thus $~10V$ is ideal. 
+	\item We now will verify the outer ranges for input voltages, i.e. $V_{in} < .5V$ and $V_{in} > 11.5V$. Probing the same output of the comparators, turn the potentiometer all the way such that $V_{in} = 24V$. Verify that the output voltage doesn't exceed $150 mV$. The same should hold for the low side ($V_{in} < 0.5V$).
+	\item With these values verified, the circuit should be operating within acceptable ranges, and correct relationship between input voltage and the LED being turned on can now be observed.
+\end{enumerate}
+		
+
+%-----------------------------
+\newpage 
+\section{Example Test Procedure/Values}
+
+In this section, we will demonstrate an example of this circuit built out on a breadboard, with each value tested to show a sort of "real life" example for this circuit. Below is an image showing the circuit built out on the breadboard: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/breadboard.png}
+	\caption{Saturation Sensing Circuit Built on a Breadboard}
+\end{figure}
+
+This is just to show the circuit built out, and isn't necessarily intended to be used for reference. Following the above testing procedure, we will begin by testing the $12V$ line and verifying that it is within acceptable boundaries: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/12v.png}
+	\caption{12V Line Measurement}
+\end{figure}
+
+Now, we will verify that our reference voltages are within an acceptable range. Below is the measurement for the $250mV$ reference voltage: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vref-.png}
+	\caption{Low-side Reference Measurement}
+\end{figure}
+
+Doing the same for the $11.75V$ reference: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vref+.png}
+	\caption{High-side Reference Measurement}
+\end{figure}
+
+Now, with a potentiometer hooked up as the input voltage, we will measure the output of the comparators near the upper end and lower end to verify that the output never gets below $~10V$: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vout_high.png}
+	\caption{Comparator output when $V_{in}$ Approaches $23.5V$}
+\end{figure}
+
+Doing the same for low-side: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vout_low.png}
+	\caption{Comparator output when $V_{in}$ approaches $0.5V$}
+\end{figure}
+
+Now, we will verify that the output doesn't exceed $150mV$ at both low and high-side detection (i.e. when the LM393 turns "on"):
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vout_on_low.png}
+	\caption{Output when $V_{in} < 0.5V$}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=.5]{Images/vout_on_high.png}
+	\caption{Output when $V_{in} > 11.5V$} 
+\end{figure} 
+
+\end{document}
