@@ -1,0 +1,1086 @@
+SIMetrixFile type=schematic format=1.0 revision=8
+.Component
+.Schematic
+.SymbolLibrary
+.Symbol
+Attributes format=1.0 revision=8 name="comp" description="Comparator" catalog="Analog;Amplifiers/Buffers/Comparators" track=1
+Segment x1=0 y1=0 x2=360 y2=240 
+Segment x1=0 y1=0 x2=0 y2=480 
+Segment x1=240 y1=156 x2=240 y2=0 
+Segment x1=294 y1=36 x2=294 y2=84 
+Segment x1=270 y1=60 x2=318 y2=60 
+Segment x1=60 y1=96 x2=60 y2=144 
+Segment x1=-120 y1=120 x2=0 y2=120 
+Segment x1=36 y1=120 x2=84 y2=120 
+Segment x1=0 y1=480 x2=360 y2=240 
+Segment x1=240 y1=324 x2=240 y2=480 
+Segment x1=-120 y1=360 x2=0 y2=360 
+Segment x1=42 y1=360 x2=78 y2=360 
+Segment x1=276 y1=420 x2=312 y2=420 
+Pin name="inn" order=2 x=-120 y=360 visible=0
+Pin name="inp" order=1 x=-120 y=120 visible=0
+Pin name="out" order=5 x=360 y=240 visible=0
+Pin name="vsn" order=4 x=240 y=480 visible=0
+Pin name="vsp" order=3 x=240 y=0 visible=0
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="X?" autopos=1 normal=Top rotated=Right font=Default order=1
+Property name="VALUE" value="LP339" autopos=1 normal=Bottom rotated=Right font=Default order=2
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="dio" description="Junction Diode" catalog="Semiconductors;Diodes" track=1
+FilledPoly x="0,82,-82,0" y="155,84,84,155"
+FilledPoly x="0,83,83,0,0,0,0,0,-83,-83,0" y="167,167,156,156,156,156,156,156,156,167,167"
+Segment x1=0 y1=0 x2=0 y2=84 
+Segment x1=-84 y1=84 x2=84 y2=84 
+Segment x1=-84 y1=84 x2=0 y2=156 
+Segment x1=84 y1=84 x2=0 y2=156 
+Segment x1=-84 y1=156 x2=84 y2=156 
+Segment x1=-84 y1=156 x2=-84 y2=168 
+Segment x1=84 y1=168 x2=84 y2=156 
+Segment x1=-84 y1=168 x2=84 y2=168 
+Segment x1=0 y1=240 x2=0 y2=168 
+Pin name="N" order=2 x=0 y=240 visible=0
+Pin name="P" order=1 x=0 y=0 visible=0
+Property name="INIT_SCRIPT" value="ic_parameterised_subckt" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="D" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="D?" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="VALUE" value="D1N4148" autopos=1 normal=Right rotated=Top font=Default order=-1
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="gnd" description="Ground" catalog="Connections;Terminals" track=1
+Segment x1=0 y1=0 x2=0 y2=120 
+Segment x1=-120 y1=120 x2=120 y2=120 
+Segment x1=-72 y1=156 x2=72 y2=156 
+Segment x1=-24 y1=192 x2=24 y2=192 
+Pin name="GND" order=1 x=0 y=0 visible=0
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="VALUE" value="0" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="npn" description="NPN 3 terminal" catalog="Semiconductors;BJTs" track=1
+FilledPoly x="23,23,23,23,0,0,23,23,23,23,23" y="96,96,95,0,0,239,239,144,144,143,96"
+FilledPoly x="80,64,119,95,80" y="200,215,239,184,200"
+Segment x1=24 y1=0 x2=0 y2=0 
+Segment x1=0 y1=0 x2=0 y2=240 
+Segment x1=24 y1=96 x2=120 y2=0 
+Segment x1=24 y1=0 x2=24 y2=240 
+Segment x1=0 y1=120 x2=-120 y2=120 
+Segment x1=24 y1=144 x2=80 y2=200 
+Segment x1=80 y1=200 x2=96 y2=184 
+Segment x1=120 y1=240 x2=96 y2=184 
+Segment x1=64 y1=216 x2=80 y2=200 
+Segment x1=120 y1=240 x2=64 y2=216 
+Segment x1=0 y1=240 x2=24 y2=240 
+Pin name="B" order=2 x=-120 y=120 visible=0
+Pin name="C" order=1 x=120 y=0 visible=0
+Pin name="E" order=3 x=120 y=240 visible=0
+Property name="INIT_SCRIPT" value="ic_bjt" autopos=1 normal=Left rotated=Left protected=1 visible=0 linear=1 font=Default order=-1
+Property name="MODEL" value="Q" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="Q?" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="SHORTPINS" value="1-3" autopos=0 x=-100 y=300 align=LeftTop visible=0 linear=1 font=Default order=-1
+Property name="VALUE" value="Q2N2222" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="opamp" description="Operational Amplifier - 5 terminal" catalog="Analog;Amplifiers/Buffers/Comparators" track=1
+Segment x1=0 y1=0 x2=360 y2=240 
+Segment x1=0 y1=0 x2=0 y2=480 
+Segment x1=240 y1=156 x2=240 y2=0 
+Segment x1=294 y1=36 x2=294 y2=84 
+Segment x1=270 y1=60 x2=318 y2=60 
+Segment x1=60 y1=96 x2=60 y2=144 
+Segment x1=-120 y1=120 x2=0 y2=120 
+Segment x1=36 y1=120 x2=84 y2=120 
+Segment x1=0 y1=480 x2=360 y2=240 
+Segment x1=240 y1=324 x2=240 y2=480 
+Segment x1=-120 y1=360 x2=0 y2=360 
+Segment x1=42 y1=360 x2=78 y2=360 
+Segment x1=276 y1=420 x2=312 y2=420 
+Pin name="inn" order=2 x=-120 y=360 visible=0
+Pin name="inp" order=1 x=-120 y=120 visible=0
+Pin name="out" order=5 x=360 y=240 visible=0
+Pin name="vsn" order=4 x=240 y=480 visible=0
+Pin name="vsp" order=3 x=240 y=0 visible=0
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="X?" autopos=1 normal=Top rotated=Right font=Default order=1
+Property name="VALUE" value="TL072" autopos=1 normal=Bottom rotated=Right font=Default order=2
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="resz" description="Resistor (Z shape)" catalog="Passives" track=1
+Segment x1=0 y1=60 x2=0 y2=0 
+Segment x1=0 y1=60 x2=-30 y2=90 
+Segment x1=-30 y1=90 x2=30 y2=150 
+Segment x1=30 y1=150 x2=-30 y2=210 
+Segment x1=-30 y1=210 x2=30 y2=270 
+Segment x1=30 y1=270 x2=0 y2=300 
+Segment x1=0 y1=300 x2=0 y2=360 
+Pin name="N" order=2 x=0 y=360 visible=0
+Pin name="P" order=1 x=0 y=0 visible=0
+Property name="DECSCRIPT" value="dec_passive" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="INCSCRIPT" value="inc_passive" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R?" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="SIMULATOR" value="DUAL" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="VALUE" value="1K" autopos=1 normal=Right rotated=Top font=Default order=-1
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="term" description="Terminal" catalog="Connections;Terminals" track=1
+Segment x1=120 y1=-60 x2=240 y2=-60 
+Segment x1=120 y1=-60 x2=120 y2=60 
+Segment x1=240 y1=-60 x2=240 y2=60 
+Segment x1=0 y1=0 x2=120 y2=0 
+Segment x1=120 y1=60 x2=240 y2=60 
+Pin name="A" order=1 x=0 y=0 visible=0
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="VALUE" value="VOUT" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+.EndSymbol
+.Symbol
+Attributes format=1.0 revision=8 name="vsrc" description="Fixed Voltage Source" catalog="Sources" track=1
+Arc l=-120 t=120 r=120 b=360 x1=0 y1=360 x2=0 y2=360 
+Segment x1=0 y1=0 x2=0 y2=120 
+Segment x1=0 y1=156 x2=0 y2=204 
+Segment x1=-24 y1=180 x2=24 y2=180 
+Segment x1=0 y1=360 x2=0 y2=480 
+Pin name="N" order=2 x=0 y=480 visible=0
+Pin name="P" order=1 x=0 y=0 visible=0
+Property name="MODEL" value="V" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="VALUE" value="5" autopos=1 normal=Right rotated=Top font=Default order=1
+Property name="REF" value="V?" autopos=1 normal=Right rotated=Bottom font=Default order=2
+.EndSymbol
+.EndSymbolLibrary
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=-720 y=960 orient=N270 
+Property name="guid" value="{65b11758-80a0-4237-8cc0-4ec4abc60a3c}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=-720 y=1440 orient=N0 
+Property name="guid" value="{e750ffb2-4ae8-4eb6-9873-9bba1528431d}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=120 y=960 orient=N270 
+Property name="guid" value="{37850494-499d-4b5b-baa9-a630583bf88a}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=120 y=1440 orient=N0 
+Property name="guid" value="{5d0231bb-e859-4b02-9b42-800104ce3e88}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=1560 y=1800 orient=N180 
+Property name="guid" value="{f73ff196-c800-4b08-8b99-9bed4d9f970d}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VIN" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=1800 y=3600 orient=N270 
+Property name="guid" value="{61719c55-2fa1-45d4-bbaf-924a10dfba78}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=1800 y=5400 orient=N0 
+Property name="guid" value="{b3fe3e02-158c-44ef-9a14-85177a726c27}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=2280 y=2280 orient=N0 
+Property name="guid" value="{49c97067-030c-4375-abaf-36b7e4cb5e34}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=2280 y=6360 orient=N270 
+Property name="guid" value="{aad69e91-c35a-4619-b3c8-dd245ca7ff33}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=2280 y=8160 orient=N0 
+Property name="guid" value="{b14f6158-902d-43ca-a6d6-d2f2bd40812f}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=2760 y=3240 orient=N270 
+Property name="guid" value="{eccec0b9-2556-4041-b25e-8563bde2b082}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="V_gain" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=2760 y=4200 orient=N0 
+Property name="guid" value="{122ac704-0e2e-49a0-8f37-062a844d293f}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=2880 y=1440 orient=N270 
+Property name="guid" value="{ffb09258-3d30-44d7-a275-c15514104a28}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames pin1="VCC"
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=2880 y=2280 orient=N90 
+Property name="guid" value="{af93475f-2d31-48a4-a97e-f0ed7a675cfb}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=3000 y=5880 orient=N270 
+Property name="guid" value="{b3622fc2-4ddb-45f5-9efe-207e649306af}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="V_gain" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=3000 y=6840 orient=N0 
+Property name="guid" value="{72c552a5-c5aa-4c2f-92cc-75a3c76e7827}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=4320 y=4080 orient=N270 
+Property name="guid" value="{757b673c-3fd5-4c72-810b-5df7acd1433b}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=4320 y=4920 orient=N90 
+Property name="guid" value="{3697f0a9-28ab-4218-955c-d26109540987}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=4320 y=6840 orient=N270 
+Property name="guid" value="{66aea276-6f85-478e-8959-fb77ddaf87d3}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=4320 y=7320 orient=N90 
+Property name="guid" value="{ec19e5d2-d075-4f06-ab5a-a21986ae1aa8}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=4440 y=2400 orient=N0 
+Property name="guid" value="{8f5a9a7e-bd39-4ff9-a5a4-4ea89e5d2197}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=5040 y=1560 orient=N270 
+Property name="guid" value="{5f3c3739-d6c0-4d79-bca3-5711e61d6b71}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC-" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=5040 y=2400 orient=N90 
+Property name="guid" value="{5fa8312f-3839-4282-a1db-d084ee6e34da}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=5760 y=2040 orient=N0 
+Property name="guid" value="{31d96de7-0e7d-4d96-a2b2-a90458d380f5}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="V_gain" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=7200 y=4920 orient=N270 
+Property name="guid" value="{85a58735-ce0f-4b45-b4a3-2e34c110d886}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="term" selected=0 protected=0 x=8040 y=4320 orient=N270 
+Property name="guid" value="{c57e3af6-27af-4a20-a971-2cec75db102e}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="VCC+" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="gnd" selected=0 protected=0 x=8040 y=6840 orient=N0 
+Property name="guid" value="{77989b86-7ab5-4763-8b9a-59bf4a9ce4dc}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="netname" value="" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="dio" selected=0 protected=0 x=8040 y=4800 orient=N0 
+Property name="guid" value="{20df55b2-cde2-4ade-9efb-2edea7e3d2d6}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="D" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="D1" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="DLED0" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="npn" selected=0 protected=0 x=7920 y=5520 orient=N0 
+Property name="guid" value="{967266d2-1025-4c7f-8db5-815f2fe7a21c}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="Q" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="Q1" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="SHORTPINS" value="1-3" autopos=0 x=-100 y=300 align=LeftTop visible=0 linear=1 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="VALUE" value="Q2N2222" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=2160 y=1800 orient=N90 
+Property name="guid" value="{08341a7b-4fc6-4eed-a188-c562e47d8ffb}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R1" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="100k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=4680 y=6240 orient=N90 
+Property name="guid" value="{64ca3d34-c258-4f41-a8b0-3822019b33b3}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R10" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="330k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=7200 y=5160 orient=N0 
+Property name="guid" value="{cdfa2f93-c843-412e-b4d5-d176e7988d6d}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R11" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="10k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=8040 y=6120 orient=N0 
+Property name="guid" value="{9d448dd3-0046-4c89-ab29-ac3a15d9eae0}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R12" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="10k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=8040 y=4320 orient=N0 
+Property name="guid" value="{588ee9b5-424b-4aca-a2b9-4e477d054716}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R13" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="33k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=2760 y=3240 orient=N0 
+Property name="guid" value="{a012b50f-4e90-42ad-a332-a6fe9f356e7b}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R14" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="3k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=2760 y=3840 orient=N0 
+Property name="guid" value="{b61f6be3-66f5-4ebb-82df-78c7f93f569a}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R15" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="1k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=3000 y=6480 orient=N0 
+Property name="guid" value="{c4a55ac4-a8be-44b8-ae99-dcac58b51a2e}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R16" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="1k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=3000 y=5880 orient=N0 
+Property name="guid" value="{f910c0ec-195a-49a2-9760-05b2001e4c00}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R17" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="3k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=4200 y=1920 orient=N90 
+Property name="guid" value="{8e8c82da-c234-4ddc-895b-4730175e3738}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R2" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="100k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=3120 y=840 orient=N90 
+Property name="guid" value="{0959d0e8-c866-4e93-94ed-fa0c373b9140}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R3" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="{R_POT}" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=5280 y=960 orient=N90 
+Property name="guid" value="{447772b9-412c-47e6-837c-ba5e5ab598c3}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R4" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="100k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=1800 y=4800 orient=N0 
+Property name="guid" value="{8c11dc37-7639-40a4-b72c-71d17b611730}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R5" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="10k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=1800 y=3720 orient=N0 
+Property name="guid" value="{c069d403-13a6-4e75-b30a-d60200896cc7}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R6" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="100" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=4680 y=3480 orient=N90 
+Property name="guid" value="{0f2db9e6-b36f-4ae0-9aa0-de0185f1a5f7}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="R7" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="330k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=2280 y=6480 orient=N0 
+Property name="guid" value="{ae6a2cf6-41cd-4ab2-a7d2-321e73498faa}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R8" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="100" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="resz" selected=0 protected=0 x=2280 y=7560 orient=N0 
+Property name="guid" value="{ffc73c58-8379-405d-9eb6-8abd6bc654cf}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="R" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="R9" autopos=1 normal=Right rotated=Bottom font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="10k" autopos=1 normal=Right rotated=Top font=Default order=-1
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="vsrc" selected=0 protected=0 x=-720 y=960 orient=N0 
+Property name="guid" value="{26f586de-9c1a-4e67-8af8-9be90534a4b0}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="V" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="12" autopos=1 normal=Right rotated=Top font=Default order=1
+Property name="REF" value="V1" autopos=1 normal=Right rotated=Bottom font=Default order=2
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="vsrc" selected=0 protected=0 x=120 y=960 orient=N0 
+Property name="guid" value="{26f586de-9c1a-4e67-8af8-9be90534a4b0}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="V" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="-12" autopos=1 normal=Right rotated=Top font=Default order=1
+Property name="REF" value="V2" autopos=1 normal=Right rotated=Bottom font=Default order=2
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="opamp" selected=0 protected=0 x=2640 y=2160 orient=M180 
+Property name="guid" value="{5ac9e72d-a165-423c-a55c-3925ac983b5a}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="X1" autopos=1 normal=Top rotated=Right font=Default order=1
+Property name="value" value="OP196" autopos=1 normal=Bottom rotated=Right font=Default order=2
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="opamp" selected=0 protected=0 x=4800 y=2280 orient=M180 
+Property name="guid" value="{12115573-94d8-4b56-9b69-fc1963c9a55e}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="X2" autopos=1 normal=Top rotated=Right font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="OP196" autopos=1 normal=Bottom rotated=Right font=Default order=2
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="comp" selected=0 protected=0 x=4080 y=4200 orient=N0 
+Property name="guid" value="{4c964ffe-c211-4816-be02-0c48a2832d95}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="REF" value="X3" autopos=1 normal=Top rotated=Right font=Default order=1
+Property name="value" value="LM393" autopos=1 normal=Bottom rotated=Right font=Default order=2
+Netnames
+.EndInstance
+.Instance
+Attributes type=symbol name="comp" selected=0 protected=0 x=4080 y=6840 orient=N0 
+Property name="guid" value="{577f8a0b-a971-431f-916b-389082f90aba}" autopos=1 normal=Left rotated=Left protected=1 visible=0 font=Default order=-1
+Property name="MODEL" value="X" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="ref" value="X4" autopos=1 normal=Top rotated=Right font=Default order=-1
+Property name="StyleNormal" value="DefaultInstance" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="value" value="LM393" autopos=1 normal=Bottom rotated=Right font=Default order=2
+Netnames
+.EndInstance
+Wire x1=1560 y1=1800 x2=1800 y2=1800 net="" branch=""
+.Wire
+Attributes x1=1560 y1=1800 x2=1800 y2=1800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=1800 y1=3600 x2=1800 y2=3720 net="" branch=""
+.Wire
+Attributes x1=1800 y1=3600 x2=1800 y2=3720 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=1800 y1=4080 x2=1800 y2=4560 net="" branch=""
+.Wire
+Attributes x1=1800 y1=4080 x2=1800 y2=4560 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=1800 y1=4560 x2=1800 y2=4800 net="" branch=""
+.Wire
+Attributes x1=1800 y1=4560 x2=1800 y2=4800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=1800 y1=4560 x2=3960 y2=4560 net="" branch=""
+.Wire
+Attributes x1=1800 y1=4560 x2=3960 y2=4560 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=1800 y1=5160 x2=1800 y2=5400 net="" branch=""
+.Wire
+Attributes x1=1800 y1=5160 x2=1800 y2=5400 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2160 y1=1800 x2=2280 y2=1800 net="" branch=""
+.Wire
+Attributes x1=2160 y1=1800 x2=2280 y2=1800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=840 x2=2280 y2=1800 net="" branch=""
+.Wire
+Attributes x1=2280 y1=840 x2=2280 y2=1800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=840 x2=2760 y2=840 net="" branch=""
+.Wire
+Attributes x1=2280 y1=840 x2=2760 y2=840 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=1800 x2=2520 y2=1800 net="" branch=""
+.Wire
+Attributes x1=2280 y1=1800 x2=2520 y2=1800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=2040 x2=2280 y2=2280 net="" branch=""
+.Wire
+Attributes x1=2280 y1=2040 x2=2280 y2=2280 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=2040 x2=2520 y2=2040 net="" branch=""
+.Wire
+Attributes x1=2280 y1=2040 x2=2520 y2=2040 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=6360 x2=2280 y2=6480 net="" branch=""
+.Wire
+Attributes x1=2280 y1=6360 x2=2280 y2=6480 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=6840 x2=2280 y2=7200 net="" branch=""
+.Wire
+Attributes x1=2280 y1=6840 x2=2280 y2=7200 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=7200 x2=2280 y2=7560 net="" branch=""
+.Wire
+Attributes x1=2280 y1=7200 x2=2280 y2=7560 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=7200 x2=3960 y2=7200 net="" branch=""
+.Wire
+Attributes x1=2280 y1=7200 x2=3960 y2=7200 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2280 y1=7920 x2=2280 y2=8160 net="" branch=""
+.Wire
+Attributes x1=2280 y1=7920 x2=2280 y2=8160 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2760 y1=3600 x2=2760 y2=3720 net="" branch=""
+.Wire
+Attributes x1=2760 y1=3600 x2=2760 y2=3720 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2760 y1=3720 x2=2760 y2=3840 net="" branch=""
+.Wire
+Attributes x1=2760 y1=3720 x2=2760 y2=3840 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2760 y1=3720 x2=3360 y2=3720 net="" branch=""
+.Wire
+Attributes x1=2760 y1=3720 x2=3360 y2=3720 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=2880 y1=1440 x2=2880 y2=1680 net="VCC" branch="+:X1#vsp"
+.Wire
+Attributes x1=2880 y1=1440 x2=2880 y2=1680 
+Property name="BranchFormula" value="+:X1#vsp" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="NetName" value="VCC" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+.EndWire
+Wire x1=2880 y1=2160 x2=2880 y2=2280 net="" branch=""
+.Wire
+Attributes x1=2880 y1=2160 x2=2880 y2=2280 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3000 y1=1920 x2=3600 y2=1920 net="" branch=""
+.Wire
+Attributes x1=3000 y1=1920 x2=3600 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3000 y1=6240 x2=3000 y2=6360 net="" branch=""
+.Wire
+Attributes x1=3000 y1=6240 x2=3000 y2=6360 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3000 y1=6360 x2=3000 y2=6480 net="" branch=""
+.Wire
+Attributes x1=3000 y1=6360 x2=3000 y2=6480 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3000 y1=6360 x2=3600 y2=6360 net="" branch=""
+.Wire
+Attributes x1=3000 y1=6360 x2=3600 y2=6360 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3120 y1=840 x2=3600 y2=840 net="" branch=""
+.Wire
+Attributes x1=3120 y1=840 x2=3600 y2=840 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3360 y1=3720 x2=3360 y2=4320 net="" branch=""
+.Wire
+Attributes x1=3360 y1=3720 x2=3360 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3360 y1=4320 x2=3840 y2=4320 net="" branch=""
+.Wire
+Attributes x1=3360 y1=4320 x2=3840 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3600 y1=840 x2=3600 y2=1920 net="" branch=""
+.Wire
+Attributes x1=3600 y1=840 x2=3600 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3600 y1=1920 x2=3840 y2=1920 net="" branch=""
+.Wire
+Attributes x1=3600 y1=1920 x2=3840 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3600 y1=6360 x2=3600 y2=6960 net="" branch=""
+.Wire
+Attributes x1=3600 y1=6360 x2=3600 y2=6960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3600 y1=6960 x2=3840 y2=6960 net="" branch=""
+.Wire
+Attributes x1=3600 y1=6960 x2=3840 y2=6960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=3480 x2=3840 y2=4320 net="" branch=""
+.Wire
+Attributes x1=3840 y1=3480 x2=3840 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=3480 x2=4320 y2=3480 net="" branch=""
+.Wire
+Attributes x1=3840 y1=3480 x2=4320 y2=3480 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=4320 x2=3960 y2=4320 net="" branch=""
+.Wire
+Attributes x1=3840 y1=4320 x2=3960 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=6240 x2=3840 y2=6960 net="" branch=""
+.Wire
+Attributes x1=3840 y1=6240 x2=3840 y2=6960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=6240 x2=4320 y2=6240 net="" branch=""
+.Wire
+Attributes x1=3840 y1=6240 x2=4320 y2=6240 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=3840 y1=6960 x2=3960 y2=6960 net="" branch=""
+.Wire
+Attributes x1=3840 y1=6960 x2=3960 y2=6960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4200 y1=1920 x2=4440 y2=1920 net="" branch=""
+.Wire
+Attributes x1=4200 y1=1920 x2=4440 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4320 y1=4080 x2=4320 y2=4200 net="" branch=""
+.Wire
+Attributes x1=4320 y1=4080 x2=4320 y2=4200 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4320 y1=4680 x2=4320 y2=4920 net="" branch=""
+.Wire
+Attributes x1=4320 y1=4680 x2=4320 y2=4920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=960 x2=4440 y2=1920 net="" branch=""
+.Wire
+Attributes x1=4440 y1=960 x2=4440 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=960 x2=4920 y2=960 net="" branch=""
+.Wire
+Attributes x1=4440 y1=960 x2=4920 y2=960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=1920 x2=4680 y2=1920 net="" branch=""
+.Wire
+Attributes x1=4440 y1=1920 x2=4680 y2=1920 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=2160 x2=4440 y2=2400 net="" branch=""
+.Wire
+Attributes x1=4440 y1=2160 x2=4440 y2=2400 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=2160 x2=4680 y2=2160 net="" branch=""
+.Wire
+Attributes x1=4440 y1=2160 x2=4680 y2=2160 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=4440 x2=5160 y2=4440 net="" branch=""
+.Wire
+Attributes x1=4440 y1=4440 x2=5160 y2=4440 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4440 y1=7080 x2=5160 y2=7080 net="" branch=""
+.Wire
+Attributes x1=4440 y1=7080 x2=5160 y2=7080 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4680 y1=3480 x2=5160 y2=3480 net="" branch=""
+.Wire
+Attributes x1=4680 y1=3480 x2=5160 y2=3480 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=4680 y1=6240 x2=5160 y2=6240 net="" branch=""
+.Wire
+Attributes x1=4680 y1=6240 x2=5160 y2=6240 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5040 y1=1560 x2=5040 y2=1800 net="VCC" branch="+:X1#vsp"
+.Wire
+Attributes x1=5040 y1=1560 x2=5040 y2=1800 
+Property name="BranchFormula" value="+:X1#vsp" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="NetName" value="VCC" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+.EndWire
+Wire x1=5040 y1=2280 x2=5040 y2=2400 net="" branch=""
+.Wire
+Attributes x1=5040 y1=2280 x2=5040 y2=2400 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5160 y1=2040 x2=5640 y2=2040 net="X1_out" branch="-:X1#out"
+.Wire
+Attributes x1=5160 y1=2040 x2=5640 y2=2040 
+Property name="BranchFormula" value="-:X1#out" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="NetName" value="X1_out" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+.EndWire
+Wire x1=5160 y1=3480 x2=5160 y2=4320 net="" branch=""
+.Wire
+Attributes x1=5160 y1=3480 x2=5160 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5160 y1=4320 x2=5160 y2=4440 net="" branch=""
+.Wire
+Attributes x1=5160 y1=4320 x2=5160 y2=4440 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5160 y1=4320 x2=5880 y2=4320 net="" branch=""
+.Wire
+Attributes x1=5160 y1=4320 x2=5880 y2=4320 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5160 y1=6240 x2=5160 y2=7080 net="" branch=""
+.Wire
+Attributes x1=5160 y1=6240 x2=5160 y2=7080 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5160 y1=7080 x2=5880 y2=7080 net="" branch=""
+.Wire
+Attributes x1=5160 y1=7080 x2=5880 y2=7080 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5280 y1=960 x2=5640 y2=960 net="" branch=""
+.Wire
+Attributes x1=5280 y1=960 x2=5640 y2=960 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5640 y1=960 x2=5640 y2=2040 net="" branch=""
+.Wire
+Attributes x1=5640 y1=960 x2=5640 y2=2040 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5640 y1=2040 x2=5760 y2=2040 net="X1_out" branch="-:X1#out-:R7#P"
+.Wire
+Attributes x1=5640 y1=2040 x2=5760 y2=2040 
+Property name="BranchFormula" value="-:X1#out-:R7#P" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="NetName" value="X1_out" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Bottom rotated=Bottom visible=0 font=User4 order=-1
+.EndWire
+Wire x1=5880 y1=4320 x2=5880 y2=5640 net="" branch=""
+.Wire
+Attributes x1=5880 y1=4320 x2=5880 y2=5640 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5880 y1=5640 x2=5880 y2=7080 net="" branch=""
+.Wire
+Attributes x1=5880 y1=5640 x2=5880 y2=7080 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=5880 y1=5640 x2=7200 y2=5640 net="" branch=""
+.Wire
+Attributes x1=5880 y1=5640 x2=7200 y2=5640 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=7200 y1=4920 x2=7200 y2=5160 net="" branch=""
+.Wire
+Attributes x1=7200 y1=4920 x2=7200 y2=5160 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=7200 y1=5520 x2=7200 y2=5640 net="" branch=""
+.Wire
+Attributes x1=7200 y1=5520 x2=7200 y2=5640 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=7200 y1=5640 x2=7800 y2=5640 net="" branch=""
+.Wire
+Attributes x1=7200 y1=5640 x2=7800 y2=5640 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=8040 y1=4680 x2=8040 y2=4800 net="" branch=""
+.Wire
+Attributes x1=8040 y1=4680 x2=8040 y2=4800 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=8040 y1=5040 x2=8040 y2=5520 net="" branch=""
+.Wire
+Attributes x1=8040 y1=5040 x2=8040 y2=5520 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=8040 y1=5760 x2=8040 y2=6120 net="" branch=""
+.Wire
+Attributes x1=8040 y1=5760 x2=8040 y2=6120 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Wire x1=8040 y1=6480 x2=8040 y2=6840 net="" branch=""
+.Wire
+Attributes x1=8040 y1=6480 x2=8040 y2=6840 
+Property name="StyleNormal" value="DefaultWire" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+Property name="StyleSelected" value="DefaultSelected" autopos=1 normal=Left rotated=Left visible=0 font=Default order=-1
+.EndWire
+Text value=".simulator SIMETRIX\n.tran 1\n*.ac dec 100 10 10k\n*.dc V2 0 5 102.040816326531m\n.simulator DEFAULT\n"
+LicenseInfo version="8.50i" feats=Basic|Micron|Schematic|Advanced|Multistep|Monte|Plugindevices|Demo|Rtn|beta serial=unknown user="unknown" code=unknown product="Elements" binarch=x64 system="WINNT/10.0/x64/16935600128/6/1/12/439207189"
+SimulatorMode value="SIMetrix"
+View x=-3671 y=568 zoomlevel=32 zoom=9 snapgrid=120 offsetX=3671 offsetY=-568
+Property name="CreateProduct" value="Elements" type=value
+Property name="CurrentMeasureItem" value="Highpass -3dB (db Plot, auto)|0|0|0|" type=value
+Property name="dcdFilter" value="top;" type=value
+Property name="GUID" value="{b0189e8b-5499-4dbc-a368-6bdab2c14812}" type=value
+Property name="UserVersion" value="26" type=value
+Property name="WriteLog" value="26/26/33637/33637" type=value
+.EndSchematic
+.EndComponent
