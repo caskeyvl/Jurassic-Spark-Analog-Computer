@@ -66,3 +66,6 @@ If you are not confident about creating this pull request, please just reach out
 ## Useful Links
 
 [BOM](https://docs.google.com/spreadsheets/d/1X1U5svekkfRvvx4M4c1IeXdciezWEVZrIU-C1A8QEh0)
+
+##CAD Images
+[Images and Drawings](https://docs.google.com/document/d/1QA50hwxr3ZcNsiclymAVjyM4m0BCg9A4m2U9kV9aPGA/edit?usp=sharing)
