@@ -28,6 +28,7 @@ Item {
         onRefreshRateChanged: rate => scopeView.changeRefreshRate(rate);
         onAntialiasingEnabled: enabled => scopeView.antialiasing = enabled;
         onOpenGlChanged: enabled => scopeView.openGL = enabled;
+        onSettingsRequested: settingsDrawer.toggle()
     }
 
 //![2]
@@ -39,6 +40,15 @@ Item {
         anchors.left: parent.left
         height: main.height
     }
-//![2]
 
+
+    SettingsPanel {
+        id: settingsDrawer
+        z: 100
+        modal: true
+
+        onCloseRequested: hide()
+        onTestToggled: on => console.log("test toggled:", on)
+    }
+//![2]
 }

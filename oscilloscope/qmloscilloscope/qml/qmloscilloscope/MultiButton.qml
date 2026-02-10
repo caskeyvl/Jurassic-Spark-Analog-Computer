@@ -46,6 +46,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
+                button.clicked()
                 currentSelection = (currentSelection + 1) % items.length;
                 selectionChanged(button.items[currentSelection]);
             }

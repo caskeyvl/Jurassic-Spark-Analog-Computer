@@ -13,6 +13,7 @@ RowLayout {
     signal signalSourceChanged(string source, int signalCount, int sampleCount);
     signal antialiasingEnabled(bool enabled)
     signal openGlChanged(bool enabled)
+    signal settingsRequested()
 
     spacing: 8
     Layout.fillWidth: true
@@ -75,5 +76,12 @@ RowLayout {
         enabled: true
         currentSelection: 0
         onSelectionChanged: antialiasingEnabled(currentSelection == 1);
+    }
+
+    ToggleButton {
+        id: settingsButton
+        text: "Settings"
+        checked: true
+        onClicked: settingsRequested()
     }
 }

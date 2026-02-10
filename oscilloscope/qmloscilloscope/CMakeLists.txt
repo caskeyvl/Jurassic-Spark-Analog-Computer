@@ -17,6 +17,10 @@ qt_standard_project_setup()
 qt_add_executable(qmloscilloscope
     datasource.cpp datasource.h
     main.cpp
+    qml/qmloscilloscope/ToggleButton.qml
+
+
+
 )
 
 set_target_properties(qmloscilloscope PROPERTIES
@@ -38,6 +42,8 @@ set(resources_resource_files
     "qml/qmloscilloscope/MultiButton.qml"
     "qml/qmloscilloscope/ScopeView.qml"
     "qml/qmloscilloscope/main.qml"
+    "qml/qmloscilloscope/SettingsPanel.qml"
+    "qml/qmloscilloscope/ToggleButton.qml"
 )
 
 qt6_add_resources(qmloscilloscope "resources"
