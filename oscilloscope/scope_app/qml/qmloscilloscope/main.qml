@@ -20,8 +20,10 @@ Item {
         onSignalSourceChanged: (source, signalCount, sampleCount) => {
             if (source === "sin")
                 dataSource.generateData(0, signalCount, sampleCount);
-            else
+            else if (source === "linear")
                 dataSource.generateData(1, signalCount, sampleCount);
+            else
+                dataSource.generateData(2, signalCount, sampleCount);
             scopeView.axisX().max = sampleCount;
         }
         onSeriesTypeChanged: type => scopeView.changeSeriesType(type);

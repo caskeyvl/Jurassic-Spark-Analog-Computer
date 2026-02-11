@@ -5,8 +5,9 @@ Item {
 
     // API
     property bool open: false
+    property bool ready: false
     property real drawerWidth: Math.min(parent ? parent.width * 0.35: 420, 420)
-    property bool modal: false
+    property bool modal: true
     property bool closeOnScrim: false
 
     signal closeRequested()
@@ -23,11 +24,13 @@ Item {
     height: parent ? parent.height : 0
 
     // Slide animation
-    x: (parent ? parent.width : 0) - (open ? width : 0)
+    x: parent ? (parent.width - (open ? width : 0)) : 0
     Behavior on x {
-        NumberAnimation { duration: 220; easing.type: Easing.InOutCubic }
+        enabled: ready
+        NumberAnimation { duration: 1000; easing.type: Easing.InOutQuart }
     }
 
+    // Scrim Rectangle (uncomment)
     // Rectangle {
     //     id: scrim
     //     visible: root.modal && root.open
@@ -80,16 +83,45 @@ Item {
             checked: true
             anchors.horizontalCenter: parent.horizontalCenter
             onToggled: root.testToggled(checked)
+            width: parent.width
         }
 
         Rectangle { height: 1; width: parent.width; color: "#444" }
 
-        ToggleButton {
-            text: "Close"
-            checked: true
+        Text {
+            text: "Trigger Level"
+            color: "white"
+            font.pointSize: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            onToggled: root.closeRequested()
         }
+
+        SnapperSlider {
+            id: triggerSlider
+            from: -12
+            to: 12
+            value: -12
+            stepSize: 0.5
+            width: parent.width
+        }
+
+        Text {
+            id: sliderValue
+            text: triggerSlider.value.toFixed(1) + " V"
+            color: "White"
+            font.pixelSize: 18
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+    ToggleButton {
+        text: "Close"
+        checked: true
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 12
+        onToggled: root.closeRequested()
+        width: parent.width - 24
+        height: 150
+        buttonColor: "#c62626"
     }
 }
 

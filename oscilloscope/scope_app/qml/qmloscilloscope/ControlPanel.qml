@@ -15,8 +15,7 @@ RowLayout {
     signal openGlChanged(bool enabled)
     signal settingsRequested()
 
-    spacing: 8
-    Layout.fillWidth: true
+    spacing: 0
 
     Text {
         text: "Scope"
@@ -31,6 +30,8 @@ RowLayout {
         currentSelection: openGLSupported ? 1 : 0
         onSelectionChanged: openGlChanged(currentSelection == 1);
         enabled: openGLSupported
+        Layout.fillHeight: true
+
     }
 
     MultiButton {
@@ -38,13 +39,16 @@ RowLayout {
         items: ["line", "scatter"]
         currentSelection: 0
         onSelectionChanged: seriesTypeChanged(items[currentSelection]);
+        Layout.fillHeight: true
+
     }
 
     MultiButton {
         id: signalSourceButton
         text: "Source: "
-        items: ["sin", "linear"]
+        items: ["sin", "linear", "square"]
         currentSelection: 0
+        Layout.fillHeight: true
         onSelectionChanged: selection => signalSourceChanged(
                                 selection,
                                 5,
@@ -56,6 +60,7 @@ RowLayout {
         text: "Samples: "
         items: ["6", "128", "1024", "10000"]
         currentSelection: 2
+        Layout.fillHeight: true
         onSelectionChanged: selection => signalSourceChanged(
                                 signalSourceButton.items[signalSourceButton.currentSelection],
                                 5,
@@ -67,6 +72,7 @@ RowLayout {
         items: ["1", "24", "60"]
         currentSelection: 2
         onSelectionChanged: refreshRateChanged(items[currentSelection]);
+        Layout.fillHeight: true
     }
 
     MultiButton {
@@ -76,6 +82,7 @@ RowLayout {
         enabled: true
         currentSelection: 0
         onSelectionChanged: antialiasingEnabled(currentSelection == 1);
+        Layout.fillHeight: true
     }
 
     ToggleButton {
@@ -83,5 +90,7 @@ RowLayout {
         text: "Settings"
         checked: true
         onClicked: settingsRequested()
+        Layout.fillHeight: true
+        width: 200
     }
 }

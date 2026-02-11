@@ -4,18 +4,21 @@ Item {
     id: root
     property string text: "Toggle"
     property bool checked: false
+    property color buttonColor: root.enabled ? (root.checked ? "#2e7d32" : "#c62626") : "#555555"
+
     signal toggled(bool checked)
     signal clicked()
 
-    implicitWidth: label.implicitWidth + 24
+    implicitWidth: label.implicitWidth + 20
     implicitHeight: label.implicitHeight + 14
 
     Rectangle {
         anchors.fill: parent
         radius: 4
-        border.color: "#333"
-
-        color: root.enabled ? (root.checked ? "#2e7d32" : "#c62626") : "#555555"
+        border.color: "#000000"
+        border.width: 2
+        color: root.buttonColor
+        //color: root.enabled ? (root.checked ? "#2e7d32" : "#c62626") : "#555555"
     }
 
     Text {

@@ -60,6 +60,11 @@ void DataSource::generateData(int type, int rowCount, int colCount)
                 x = j;
                 y = (qreal) i / 10;
                 break;
+            case 2:
+                // square wave
+                x = j;
+                y = ((j % 80) < 40) ? 1 : 0;
+                y += 0.05 * (QRandomGenerator::global()->generateDouble() - 0.5);
             default:
                 // unknown, do nothing
                 break;

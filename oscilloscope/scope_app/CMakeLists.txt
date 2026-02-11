@@ -18,6 +18,7 @@ qt_add_executable(qmloscilloscope
     datasource.cpp datasource.h
     main.cpp
     qml/qmloscilloscope/ToggleButton.qml
+    qml/qmloscilloscope/SnapperSlider.qml
 
 
 
@@ -44,6 +45,7 @@ set(resources_resource_files
     "qml/qmloscilloscope/main.qml"
     "qml/qmloscilloscope/SettingsPanel.qml"
     "qml/qmloscilloscope/ToggleButton.qml"
+    "qml/qmloscilloscope/SnapperSlider.qml"
 )
 
 qt6_add_resources(qmloscilloscope "resources"

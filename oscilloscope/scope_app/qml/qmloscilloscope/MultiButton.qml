@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
 import QtQuick
+import QtQuick.Layouts
 
 Item {
     id: button
@@ -13,8 +14,10 @@ Item {
     signal selectionChanged(variant selection)
     signal clicked
 
-    implicitWidth: buttonText.implicitWidth + 5
-    implicitHeight: buttonText.implicitHeight + 10
+    implicitWidth: buttonText.implicitWidth + 20
+    implicitHeight: buttonText.implicitHeight + 12
+    Layout.minimumWidth:1
+    //Layout.fillWidth: true
 
     Rectangle {
         anchors.fill: parent
@@ -36,10 +39,11 @@ Item {
             id: buttonText
             text: button.text + button.items[currentSelection]
             clip: true
-            wrapMode: Text.WordWrap
+            wrapMode: Text.NoWrap
+            elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            anchors.fill: parent
+            anchors.centerIn: parent
             font.pointSize: 14
         }
 
