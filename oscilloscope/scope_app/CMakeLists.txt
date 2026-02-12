@@ -19,9 +19,6 @@ qt_add_executable(qmloscilloscope
     main.cpp
     qml/qmloscilloscope/ToggleButton.qml
     qml/qmloscilloscope/SnapperSlider.qml
-
-
-
 )
 
 set_target_properties(qmloscilloscope PROPERTIES

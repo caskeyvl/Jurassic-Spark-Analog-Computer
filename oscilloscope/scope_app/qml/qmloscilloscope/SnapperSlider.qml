@@ -61,6 +61,8 @@ Item{
                 id: base
                 anchors.fill: parent
                 //radius: height / 2
+                border.color: "#000000"
+                border.width: 2
                 color: "#d7d9c2"
             }
 
@@ -73,6 +75,8 @@ Item{
                 width: Math.max(0, slider.visualPosition * parent.width)
                 //radius: Math.min(base.radius, width / 2)
                 color: "#21be2b"
+                border.color: "#000000"
+                border.width: 2
                 z: 1
             }
         }
