@@ -5,119 +5,95 @@ import QtQuick
 import QtCharts
 
 //![1]
-ChartView {
-    id: chartView
+Item {
+    id: root
 
-    property bool openGL: openGLSupported
+    property bool openGl: openGLSupported
+    property bool running: false
+    property int samplesPerView: 1024
 
-    animationOptions: ChartView.NoAnimation
-    theme: ChartView.ChartThemeDark
+    property int refreshHz: 60
+    property var series1: null
+    property var series2: null
 
-    onOpenGLChanged: {
-        if (openGLSupported) {
-            var series1 = series("signal 1")
-            if (series1)
-                series1.useOpenGL = openGL;
-            var series2 = series("signal 2")
-            if (series2)
-                series2.useOpenGL = openGL;
+    ChartView {
+        id: chartView
+        anchors.fill: parent
+        antialiasing: true
+        legend.visible: false
+        animationOptions: ChartView.NoAnimation
+        theme: ChartView.ChartThemeDark
+
+        ValueAxis { id: axisY1; min: -1; max: 4}
+        ValueAxis { id: axisY2; min: -10; max: 5}
+        ValueAxis { id: axisX; min: 0; max: root.samplesPerView }
+
+        LineSeries {
+            id: channel1
+            name: "Channel 1"
+            axisX: axisX
+            axisY: axisY1
+            useOpenGL: root.openGl
+        }
+        LineSeries {
+            id: channel2
+            name: "Channel 2"
+            axisX: axisX
+            axisY: axisY2
+            useOpenGL: root.openGl
         }
     }
 
-    ValueAxis {
-        id: axisY1
-        min: -1
-        max: 4
-    }
-
-    ValueAxis {
-        id: axisY2
-        min: -10
-        max: 5
-    }
-
-    ValueAxis {
-        id: axisX
-        min: 0
-        max: 1024
-    }
-
-    LineSeries {
-        id: lineSeries1
-        name: "signal 1"
-        axisX: axisX
-        axisY: axisY1
-        useOpenGL: chartView.openGL
-    }
-    LineSeries {
-        id: lineSeries2
-        name: "signal 2"
-        axisX: axisX
-        axisYRight: axisY2
-        useOpenGL: chartView.openGL
-    }
-//![1]
-
-    //![2]
     Timer {
         id: refreshTimer
-        interval: 1 / 60 * 1000 // 60 Hz
-        running: true
+        interval: 1000 / root.refreshHz
+        running: root.running
         repeat: true
-        onTriggered: {
-            dataSource.update(chartView.series(0));
-            dataSource.update(chartView.series(1));
-        }
+        onTriggered: root.redraw()
     }
-    //![2]
 
-    //![3]
+    onSamplesPerViewChanged: {
+        axisX.max = root.samplesPerView - 1
+        root.redraw()
+    }
+
+    Component.onCompleted: {
+        root.series1 = channel1
+        root.series2 = channel2
+    }
+
+    function redraw() {
+        dataSource.setSamplesPerView(samplesPerView)
+        dataSource.update(channel1)
+        dataSource.update(channel2)
+    }
+
+    function changeRefreshRate (rate) {
+        refreshTimer.interval = 1000 / Number(rate)
+    }
+
     function changeSeriesType(type) {
-        chartView.removeAllSeries();
+        chartView.removeAllSeries()
 
-        // Create two new series of the correct type. Axis x is the same for both of the series,
-        // but the series have their own y-axes to make it possible to control the y-offset
-        // of the "signal sources".
-        var series1
-        var series2
-        if (type === "line") {
-            series1 = chartView.createSeries(ChartView.SeriesTypeLine, "signal 1",
-                                             axisX, axisY1);
-            series1.useOpenGL = chartView.openGL
-
-            series2 = chartView.createSeries(ChartView.SeriesTypeLine, "signal 2",
-                                             axisX, axisY2);
-            series2.useOpenGL = chartView.openGL
+        var s1, s2
+        if(type === "linear") {
+            s1 = chartView.createSeries(ChartView.SeriesTypeLine, "Channel 1", axisX, axisY1)
+            s2 = chartView.createSeries(ChartView.SeriesTypeLine, "Channel 2", axisX, axisY2)
         } else {
-            series1 = chartView.createSeries(ChartView.SeriesTypeScatter, "signal 1",
-                                             axisX, axisY1);
-            series1.markerSize = 2;
-            series1.borderColor = "transparent";
-            series1.useOpenGL = chartView.openGL
+            s1 = chartView.createSeries(ChartView.SeriesTypeScatter, "Channel1", axisX, axisY1)
+            s1.markerSize = 2
+            s1.borderColor = "transparent"
 
-            series2 = chartView.createSeries(ChartView.SeriesTypeScatter, "signal 2",
-                                             axisX, axisY2);
-            series2.markerSize = 2;
-            series2.borderColor = "transparent";
-            series2.useOpenGL = chartView.openGL
+            s2 = chartView.createSeries(ChartView.SeriesTypeScatter, "Channel2", axisX, axisY2)
+            s2.markerSize = 2
+            s2.borderColor = "transparent"
         }
+        s1.useOpenGL= root.openGl
+        s2.useOpenGL= root.openGl
     }
 
-    function createAxis(min, max) {
-        // The following creates a ValueAxis object that can be then set as a x or y axis for a series
-        return Qt.createQmlObject("import QtQuick 2.0; import QtCharts 2.0; ValueAxis { min: "
-                                  + min + "; max: " + max + " }", chartView);
-    }
-    //![3]
-
-    function setAnimations(enabled) {
-        if (enabled)
-            chartView.animationOptions = ChartView.SeriesAnimations;
-        else
-            chartView.animationOptions = ChartView.NoAnimation;
-    }
-
-    function changeRefreshRate(rate) {
-        refreshTimer.interval = 1 / Number(rate) * 1000;
+    function setSamplesPerView(n) {
+        root.samplesPerView = Number(n)
+        axisX.max = root.samplesPerView
     }
 }

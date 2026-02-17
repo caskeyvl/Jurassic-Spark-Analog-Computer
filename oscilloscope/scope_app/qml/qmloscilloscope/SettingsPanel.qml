@@ -99,7 +99,7 @@ Item {
             id: triggerSlider
             from: -12
             to: 12
-            value: -12
+            value: 0
             stepSize: 0.5
             width: parent.width
         }

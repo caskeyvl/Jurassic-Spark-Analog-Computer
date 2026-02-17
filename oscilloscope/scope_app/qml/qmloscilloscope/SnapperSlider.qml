@@ -47,6 +47,7 @@ Item{
             const snapped = root.snap(value)
             if(snapped !== value)
                 value = snapped
+            dataSource.setTriggerLevel(value)
         }
 
         // background
