@@ -99,9 +99,11 @@ Item {
             id: triggerSlider
             from: -12
             to: 12
-            value: 0
+            value: 8
             stepSize: 0.5
             width: parent.width
+
+            onValueChanged: dataSource.setTriggerLevel(value)
         }
 
         Text {

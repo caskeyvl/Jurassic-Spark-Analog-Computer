@@ -21,20 +21,18 @@ DataSource::DataSource(QQuickView *appViewer, QObject *parent)
 
     connect(&m_sampleTimer, &QTimer::timeout, this, &DataSource::sample);
     m_sampleTimer.start(1);
-
-    // qRegisterMetaType<QAbstractSeries*>();
-    // qRegisterMetaType<QAbstractAxis*>();
-
-    // generateData(0, 5, 1024);
 }
 
 void DataSource::update(QAbstractSeries *series)
 {
+    if (!m_renderEnabled) return;
+
     auto *xy = qobject_cast<QXYSeries *>(series);
     if(!xy) return;
 
     // sample count
-    const int N = qMin(m_samplesPerView, m_buffer.size());
+    const int size = m_buffer.size();
+    const int N = qMin(m_samplesPerView, size);
     if(N <= 1) return;
 
     QList<QPointF> points;
@@ -42,84 +40,51 @@ void DataSource::update(QAbstractSeries *series)
 
     // m_writeIndex points to next sample, so current sample is at m_writeIndex - 1
     int end = m_writeIndex - 1;
-    if (end < 0)  end += m_buffer.size();
+    if (end < 0) end += size;
+    int start = end - (N - 1);
+    start %= size;
+    if (start < 0) start += size;
 
-    // build points left to right
-    for(int i = 0; i < N; ++i) {
-        int idx = end - (N - 1 - i);
-        idx %= m_buffer.size();
-        if(idx < 0) idx += m_buffer.size();
+    for (int i = 0; i < N; i++) {
+        int idx = start + i;
+        if (idx >= size) idx -= size;
         points.append(QPointF(i, m_buffer[idx]));
     }
 
     xy->replace(points);
+    //emit frameReady();
 }
-
-// void DataSource::generateData(int type, int rowCount, int colCount)
-// {
-//     // Remove previous data
-//     m_data.clear();
-
-//     // Append the new data depending on the type
-//     for (int i(0); i < rowCount; i++) {
-//         QList<QPointF> points;
-//         points.reserve(colCount);
-//         for (int j(0); j < colCount; j++) {
-//             qreal x(0);
-//             qreal y(0);
-//             switch (type) {
-//             case 0:
-//                 // data with sin + random component
-//                 y = qSin(M_PI / 50 * j) + 0.5 + QRandomGenerator::global()->generateDouble();
-//                 x = j;
-//                 break;
-//             case 1:
-//                 // linear data
-//                 x = j;
-//                 y = (qreal) i / 10;
-//                 break;
-//             case 2:
-//                 // square wave
-//                 x = j;
-//                 y = ((j % 80) < 40) ? 1 : 0;
-//                 y += 0.05 * (QRandomGenerator::global()->generateDouble() - 0.5);
-//             default:
-//                 // unknown, do nothing
-//                 break;
-//             }
-//             points.append(QPointF(x, y));
-//         }
-//         m_data.append(points);
-//     }
-// }
 
 void DataSource::sample() {
     // produce one sample and write it in ring buffer
 
-    float t = m_writeIndex * 0.05f;
-    float y = qSin(M_PI / 50 * t) + 0.5 + QRandomGenerator::global()->generateDouble();
+    //float t = m_writeIndex * 0.05f;
+    static float phase = -4.0f;
+    phase += 0.02f;
+    if (phase > 8.0f) phase = -1.0f;
+    float y = phase;
+    //float y = qSin(M_PI / 50 * t) + 0.5 + QRandomGenerator::global()->generateDouble();
 
     m_buffer[m_writeIndex] = y;
 
-    m_prevSample = y;
+    checkTrigger(y);
+
     m_writeIndex = (m_writeIndex + 1) % m_buffer.size();
 
-   // emit frameReady();
+   //emit frameReady();
 }
 
 void DataSource::setTriggerLevel(float level) {
     m_triggerLevel = level;
     m_armed = true;         // re arm
-    // reset triggerIndex?
+    m_renderEnabled = false;
 }
 
 void DataSource::checkTrigger(float current) {
-    if ((m_armed && m_prevSample < m_triggerLevel) && current >= m_triggerLevel) {
-        m_triggerIndex = m_writeIndex;
+    if (!m_renderEnabled && m_prevSample < m_triggerLevel && current >= m_triggerLevel) {
+        m_renderEnabled = true;
         m_armed = false;
-        emit frameReady();
     }
-
     m_prevSample = current;
 }
 

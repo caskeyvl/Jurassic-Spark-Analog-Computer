@@ -5,15 +5,16 @@ import QtQuick
 import QtQuick.Layouts
 
 RowLayout {
-    property alias openGLButton: openGLButton
-    property alias antialiasButton: antialiasButton
-
+    //property alias openGLButton: openGLButton
+    //property alias antialiasButton: antialiasButton
+    id: root
     signal seriesTypeChanged(string type)
     signal refreshRateChanged(variant rate);
     signal signalSourceChanged(string source, int signalCount, int sampleCount);
     signal antialiasingEnabled(bool enabled)
     signal openGlChanged(bool enabled)
     signal settingsRequested()
+    signal channelToggle(int channel, bool enabled)
 
     spacing: 0
 
@@ -23,65 +24,90 @@ RowLayout {
         color: "white"
     }
 
-    MultiButton {
-        id: openGLButton
-        text: "OpenGL: "
-        items: ["false", "true"]
-        currentSelection: openGLSupported ? 1 : 0
-        onSelectionChanged: openGlChanged(currentSelection == 1);
-        enabled: openGLSupported
+    ToggleButton {
+        id: channel1Button
+        text: "Channel 1"
+        buttonColor: checked ? "cccccc" : "c62626"
+        onClicked: root.channelToggle(1, checked)
         Layout.fillHeight: true
-
+        Layout.preferredWidth: 300
     }
 
-    MultiButton {
-        text: "Graph: "
-        items: ["line", "scatter"]
-        currentSelection: 0
-        onSelectionChanged: seriesTypeChanged(items[currentSelection]);
+    ToggleButton {
+        id: channel2Button
+        text: "Channel 2"
+        buttonColor: checked ? "cccccc" : "c62626"
+        onClicked: root.channelToggle(2, checked)
         Layout.fillHeight: true
-
+        Layout.preferredWidth: 300
     }
 
-    MultiButton {
-        id: signalSourceButton
-        text: "Source: "
-        items: ["sin", "linear", "square"]
-        currentSelection: 0
-        Layout.fillHeight: true
-        onSelectionChanged: selection => signalSourceChanged(
-                                selection,
-                                5,
-                                sampleCountButton.items[sampleCountButton.currentSelection]);
-    }
+    // MultiButton {
+    //     id: openGLButton
+    //     text: "OpenGL: "
+    //     items: ["false", "true"]
+    //     currentSelection: openGLSupported ? 1 : 0
+    //     onSelectionChanged: openGlChanged(currentSelection == 1);
+    //     enabled: openGLSupported
+    //     Layout.fillHeight: true
 
-    MultiButton {
-        id: sampleCountButton
-        text: "Samples: "
-        items: ["6", "128", "1024", "10000"]
-        currentSelection: 2
-        Layout.fillHeight: true
-        onSelectionChanged: selection => signalSourceChanged(
-                                signalSourceButton.items[signalSourceButton.currentSelection],
-                                5,
-                                selection);
-    }
+    // }
 
-    MultiButton {
-        text: "Refresh rate: "
-        items: ["1", "24", "60"]
-        currentSelection: 2
-        onSelectionChanged: refreshRateChanged(items[currentSelection]);
-        Layout.fillHeight: true
-    }
+    // MultiButton {
+    //     text: "Graph: "
+    //     items: ["line", "scatter"]
+    //     currentSelection: 0
+    //     onSelectionChanged: seriesTypeChanged(items[currentSelection]);
+    //     Layout.fillHeight: true
 
-    MultiButton {
-        id: antialiasButton
-        text: "Antialias: "
-        items: ["OFF", "ON"]
-        enabled: true
-        currentSelection: 0
-        onSelectionChanged: antialiasingEnabled(currentSelection == 1);
+    // }
+
+    // MultiButton {
+    //     id: signalSourceButton
+    //     text: "Source: "
+    //     items: ["sin", "linear", "square"]
+    //     currentSelection: 0
+    //     Layout.fillHeight: true
+    //     onSelectionChanged: selection => signalSourceChanged(
+    //                             selection,
+    //                             5,
+    //                             sampleCountButton.items[sampleCountButton.currentSelection]);
+    // }
+
+    // MultiButton {
+    //     id: sampleCountButton
+    //     text: "Samples: "
+    //     items: ["6", "128", "1024", "10000"]
+    //     currentSelection: 2
+    //     Layout.fillHeight: true
+    //     onSelectionChanged: selection => signalSourceChanged(
+    //                             signalSourceButton.items[signalSourceButton.currentSelection],
+    //                             5,
+    //                             selection);
+    // }
+
+    // MultiButton {
+    //     text: "Refresh rate: "
+    //     items: ["1", "24", "60"]
+    //     currentSelection: 2
+    //     onSelectionChanged: refreshRateChanged(items[currentSelection]);
+    //     Layout.fillHeight: true
+    // }
+
+    // MultiButton {
+    //     id: antialiasButton
+    //     text: "Antialias: "
+    //     items: ["OFF", "ON"]
+    //     enabled: true
+    //     currentSelection: 0
+    //     onSelectionChanged: antialiasingEnabled(currentSelection == 1);
+    //     Layout.fillHeight: true
+    // }
+
+    ToggleButton {
+        id: startStopButton
+        text: checked ? "Start" : "Stop"
+        onClicked: checked ? dataSource.start() : dataSource.stop()
         Layout.fillHeight: true
     }
 
@@ -91,6 +117,7 @@ RowLayout {
         checked: true
         onClicked: settingsRequested()
         Layout.fillHeight: true
-        width: 200
+        buttonColor: "#cccccc"
+        Layout.preferredWidth: 175
     }
 }

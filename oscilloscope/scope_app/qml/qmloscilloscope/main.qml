@@ -17,20 +17,21 @@ Item {
         anchors.left: parent.left
         height: 200
 
-        onSeriesTypeChanged: type => scope.changeSeriesType(type)
-        onRefreshRateChanged: rate => scope.changeRefreshRate(rate)
-        // onAntiAliasingEnabled: enabled => scopeView.antialiasing = enabled
-        onOpenGlChanged: enabled => scope.openGL = enabled
+        onSeriesTypeChanged: type => scopeView.changeSeriesType(type)
+        onRefreshRateChanged: rate => scopeView.changeRefreshRate(rate)
+        // onAntiAliasingEnabled: enabled => scopeViewView.antialiasing = enabled
+        onOpenGlChanged: enabled => scopeView.openGL = enabled
         onSettingsRequested: settingsDrawer.toggle()
 
         onSignalSourceChanged: (source, signalCount, sampleCount) => {
-                                   scope.setSamplesPerView(sampleCount)
+                                   scopeView.setSamplesPerView(sampleCount)
                                    dataSource.setSignalType(source === "sin" ? 0 : source === "linear" ? 1 : 2)
                                }
+        onChannelToggle: (ch, enabled) => scopeView.setChannelEnabled(ch, enabled)
     }
 
     ScopeView {
-        id: scope
+        id: scopeView
         anchors.top: parent.top
         anchors.bottom: controlPanel.top
         anchors.left: parent.left
@@ -47,8 +48,8 @@ Item {
     }
 
     Component.onCompleted: {
-        scope.running = true
-        scope.redraw()
+        scopeView.running = true
+        scopeView.redraw()
         dataSource.start()
     }
 }

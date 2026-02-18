@@ -39,6 +39,9 @@ private:
     bool m_armed = true;
     int m_triggerIndex = -1;
     int m_samplesPerView = 1024;
+    bool m_triggered = false;
+    int m_preTrigger = 250;
+    bool m_renderEnabled = false;
 
     // QList<QList<QPointF>> m_data;
 

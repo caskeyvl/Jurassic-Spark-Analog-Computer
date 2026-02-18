@@ -12,6 +12,11 @@ Item {
     property bool running: false
     property int samplesPerView: 1024
 
+    property var ch1Series: channel1
+    property var ch2Series: channel2
+    property bool ch1Enabled: true
+    property bool ch2Enabled: true
+
     property int refreshHz: 60
     property var series1: null
     property var series2: null
@@ -64,8 +69,8 @@ Item {
 
     function redraw() {
         dataSource.setSamplesPerView(samplesPerView)
-        dataSource.update(channel1)
-        dataSource.update(channel2)
+        if (ch1Enabled && ch1Series) dataSource.update(channel1)
+        if (ch2Enabled && ch2Series) dataSource.update(channel2)
     }
 
     function changeRefreshRate (rate) {
@@ -95,5 +100,31 @@ Item {
     function setSamplesPerView(n) {
         root.samplesPerView = Number(n)
         axisX.max = root.samplesPerView
+    }
+
+    function channelToggle(n) {
+        if ( n === 1 ) {
+            channel1.visible = channel1.visible ? channel1.disable : channel1.enable
+            if (channel1Enabled) dataSource.update(ch1Series)
+        } else if (n === 2) {
+            channel2.visible = channel2.visible ? channel2.disable : channel2.enable
+            if(channel2Enabled) dataSource.update(ch2Series)
+        }
+    }
+
+    function setChannelEnabled(ch, enabled) {
+        if (ch === 1) {
+            ch1Enabled = enabled
+            if(ch1Series) {
+                ch1Series.visible = enabled
+                if (!enabled) ch1Series.clear()
+            }
+        } else if (ch === 2) {
+            ch2Enabled = enabled
+            if(ch2Series) {
+                ch2Series.visible = enabled
+                if (!enabled) ch2Series.clear()
+            }
+        }
     }
 }

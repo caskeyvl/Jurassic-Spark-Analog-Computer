@@ -8,6 +8,7 @@ Item {
 
     signal toggled(bool checked)
     signal clicked()
+    signal channelToggled(int channel, bool enabled)
 
     implicitWidth: label.implicitWidth + 20
     implicitHeight: label.implicitHeight + 14
