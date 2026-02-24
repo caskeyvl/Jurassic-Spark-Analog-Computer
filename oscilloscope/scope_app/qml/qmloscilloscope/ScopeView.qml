@@ -12,14 +12,12 @@ Item {
     property bool running: false
     property int samplesPerView: 1024
 
-    property var ch1Series: channel1
-    property var ch2Series: channel2
-    property bool ch1Enabled: true
-    property bool ch2Enabled: true
+    function _toIndex(ch) { return Number(ch) - 1}
+
+    property var channelSeries: [null, null, null, null]
+    property var channelEnabled: [false, false, false, false]
 
     property int refreshHz: 60
-    property var series1: null
-    property var series2: null
 
     ChartView {
         id: chartView
@@ -29,9 +27,11 @@ Item {
         animationOptions: ChartView.NoAnimation
         theme: ChartView.ChartThemeDark
 
-        ValueAxis { id: axisY1; min: -1; max: 4}
-        ValueAxis { id: axisY2; min: -10; max: 5}
-        ValueAxis { id: axisX; min: 0; max: root.samplesPerView }
+        ValueAxis { id: axisY1; min: -10; max: 10}
+        ValueAxis { id: axisY2; min: -10; max: 10}
+        ValueAxis { id: axisY3; min: -10; max: 10}
+        ValueAxis { id: axisY4; min: -10; max: 10}
+        ValueAxis { id: axisX; min: 0; max: root.samplesPerView - 1}
 
         LineSeries {
             id: channel1
@@ -47,6 +47,20 @@ Item {
             axisY: axisY2
             useOpenGL: root.openGl
         }
+        LineSeries {
+            id: channel3
+            name: "Channel 3"
+            axisX: axisX
+            axisY: axisY3
+            useOpenGL: root.openGl
+        }
+        LineSeries {
+            id: channel4
+            name: "Channel 4"
+            axisX: axisX
+            axisY: axisY4
+            useOpenGL: root.openGl
+        }
     }
 
     Timer {
@@ -57,20 +71,26 @@ Item {
         onTriggered: root.redraw()
     }
 
+    Component.onCompleted: {
+        root.channelSeries = [channel1, channel2, channel3, channel4]
+        dataSource.setSamplesPerView(root.samplesPerView);
+    }
+
     onSamplesPerViewChanged: {
         axisX.max = root.samplesPerView - 1
+        dataSource.setSamplesPerView(root.samplesPerView)
         root.redraw()
     }
 
-    Component.onCompleted: {
-        root.series1 = channel1
-        root.series2 = channel2
-    }
-
     function redraw() {
-        dataSource.setSamplesPerView(samplesPerView)
-        if (ch1Enabled && ch1Series) dataSource.update(channel1)
-        if (ch2Enabled && ch2Series) dataSource.update(channel2)
+        for (var i = 0; i < 4; ++i) {
+            var s = root.channelSeries[i]
+            if (root.channelEnabled[i] && s) {
+                dataSource.updateChannel(i, s)
+            } else if (s) {
+                s.clear()
+            }
+        }
     }
 
     function changeRefreshRate (rate) {
@@ -80,51 +100,56 @@ Item {
     function changeSeriesType(type) {
         chartView.removeAllSeries()
 
-        var s1, s2
-        if(type === "linear") {
-            s1 = chartView.createSeries(ChartView.SeriesTypeLine, "Channel 1", axisX, axisY1)
-            s2 = chartView.createSeries(ChartView.SeriesTypeLine, "Channel 2", axisX, axisY2)
-        } else {
-            s1 = chartView.createSeries(ChartView.SeriesTypeScatter, "Channel1", axisX, axisY1)
-            s1.markerSize = 2
-            s1.borderColor = "transparent"
+        var newSeries = [null, null, null, null]
+        var axesY = [axisY1, axisY2, axisY3, axisY4]
+        var names = ["Channel1", "Channel2", "Channel3", "Channel4"]
 
-            s2 = chartView.createSeries(ChartView.SeriesTypeScatter, "Channel2", axisX, axisY2)
-            s2.markerSize = 2
-            s2.borderColor = "transparent"
+        for (var i = 0; i < 4; ++i) {
+            var s
+            if(type === "linear") {
+                s = chartView.createSeries(ChartView.SeriesTypeLine, names[i], axisX, axesY[i])
+            } else {
+                s = chartView.createSeries(ChartView.SeriesTypeScatter, names[i], axisX, axesY[i])
+                s.markerSize = 2
+                s.borderColor = "transparent"
+            }
+
+            s.useOpenGL = root.openGl
+            s.visible = root.channelEnabled[i]
+            newSeries[i] = s
         }
-        s1.useOpenGL= root.openGl
-        s2.useOpenGL= root.openGl
+
+        root.channelSeries = newSeries
+        root.redraw()
     }
 
     function setSamplesPerView(n) {
         root.samplesPerView = Number(n)
-        axisX.max = root.samplesPerView
+        //axisX.max = root.samplesPerView
     }
 
-    function channelToggle(n) {
-        if ( n === 1 ) {
-            channel1.visible = channel1.visible ? channel1.disable : channel1.enable
-            if (channel1Enabled) dataSource.update(ch1Series)
-        } else if (n === 2) {
-            channel2.visible = channel2.visible ? channel2.disable : channel2.enable
-            if(channel2Enabled) dataSource.update(ch2Series)
-        }
-    }
+    // function channelToggle(n) {
+    //     if ( n === 1 ) {
+    //         channel1.visible = channel1.visible ? channel1.disable : channel1.enable
+    //         if (channel1Enabled) dataSource.update(ch1Series)
+    //     } else if (n === 2) {
+    //         channel2.visible = channel2.visible ? channel2.disable : channel2.enable
+    //         if(channel2Enabled) dataSource.update(ch2Series)
+    //     }
+    // }
 
     function setChannelEnabled(ch, enabled) {
-        if (ch === 1) {
-            ch1Enabled = enabled
-            if(ch1Series) {
-                ch1Series.visible = enabled
-                if (!enabled) ch1Series.clear()
-            }
-        } else if (ch === 2) {
-            ch2Enabled = enabled
-            if(ch2Series) {
-                ch2Series.visible = enabled
-                if (!enabled) ch2Series.clear()
-            }
+        var idx = _toIndex(ch)
+        if (idx < 0 || idx > 3) return
+
+        root.channelEnabled[idx] = enabled
+
+        var s = root.channelSeries[idx]
+        if(s) {
+            s.visible = enabled
+            if (!enabled) s.clear()
         }
+
+        if (enabled) root.redraw()
     }
 }

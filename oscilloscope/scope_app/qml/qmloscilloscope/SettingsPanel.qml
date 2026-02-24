@@ -74,25 +74,29 @@ Item {
         Text {
             text: "Settings"
             color: "white"
-            font.pointSize: 18
+            font.pointSize: 24
             anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        ToggleButton {
-            text: "Test"
-            checked: true
-            anchors.horizontalCenter: parent.horizontalCenter
-            onToggled: root.testToggled(checked)
-            width: parent.width
         }
 
         Rectangle { height: 1; width: parent.width; color: "#444" }
 
         Text {
-            text: "Trigger Level"
+            text: "Trigger Settings"
             color: "white"
             font.pointSize: 20
             anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        MultiButton {
+            id: triggerOnButton
+            text: "Trigger on: "
+            items: ["Ch1", "Ch2", "Ch3", "Ch4"]
+            currentSelection: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            height: 80
+
+            onSelectionChanged: dataSource.setTriggerChannel(Number(currentSelection))
         }
 
         SnapperSlider {
@@ -108,22 +112,28 @@ Item {
 
         Text {
             id: sliderValue
-            text: triggerSlider.value.toFixed(1) + " V"
+            text: "Trigger Level: " + triggerSlider.value.toFixed(1) + " V"
             color: "White"
             font.pixelSize: 18
             anchors.horizontalCenter: parent.horizontalCenter
         }
+
+        Rectangle { height: 1; color: "#444"; width: parent.width }
     }
     ToggleButton {
         text: "Close"
+        checkable: false
+
         checked: true
+        checkedColor: "#c62626"
+        textCheckedColor: "white"
+
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 12
-        onToggled: root.closeRequested()
         width: parent.width - 24
         height: 150
-        buttonColor: "#c62626"
+
+        onClicked: root.closeRequested()
     }
 }
-
