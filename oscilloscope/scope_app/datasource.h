@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE void setTriggerLevel(float level);
     Q_INVOKABLE void setTriggerChannel(int channel);
     Q_INVOKABLE void setSamplesPerView(int n);
+    Q_INVOKABLE void rearm();
 
     Q_INVOKABLE void start();
     Q_INVOKABLE void stop();

@@ -6,7 +6,8 @@ Item{
     property alias from: slider.from
     property alias to: slider.to
     property alias stepSize: slider.stepSize
-    property real value: slider.value
+    property real value: 0
+    onValueChanged: slider.value = value
 
     implicitHeight: 60
     implicitWidth: 240
@@ -20,9 +21,6 @@ Item{
         const snapped = f + n * s
         return Math.max(slider.from, Math.min(slider.to, snapped))
     }
-    Component.onCompleted: {
-        slider.value = root.value
-    }
 
     Slider {
         id: slider
@@ -32,8 +30,6 @@ Item{
 
         anchors.fill: parent
         snapMode: Slider.SnapAlways
-
-        Component.onCompleted: slider.value = root.value
 
         // Dragging snap
         onMoved: {
@@ -47,7 +43,6 @@ Item{
             const snapped = root.snap(value)
             if(snapped !== value)
                 value = snapped
-            dataSource.setTriggerLevel(value)
         }
 
         // background

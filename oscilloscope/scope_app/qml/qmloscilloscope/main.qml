@@ -23,6 +23,7 @@ Item {
         onOpenGlChanged: enabled => scopeView.openGl = enabled
         onSettingsRequested: settingsDrawer.toggle()
 
+
         onSignalSourceChanged: (source, signalCount, sampleCount) => {
                                    scopeView.setSamplesPerView(sampleCount)
                                    dataSource.setSignalType(source === "sin" ? 0 : source === "linear" ? 1 : 2)
@@ -43,8 +44,28 @@ Item {
         id: settingsDrawer
         z: 100
         modal: true
+        enabled: !triggerSettingsDrawer.open && !axisSettingsDrawer.open
         onCloseRequested: hide()
         onTestToggled: on => console.log("test toggled:", on)
+        onTriggerSettingsRequested: triggerSettingsDrawer.toggle()
+        onAxisSettingsRequested: axisSettingsDrawer.toggle()
+    }
+
+    TriggerSettings {
+        id: triggerSettingsDrawer
+        z: 100
+        modal: true
+        onCloseRequested: hide()
+        onTestToggled: on => console.log("test toggled:", on)
+    }
+
+    AxisSettings {
+        id: axisSettingsDrawer
+        z: 100
+        modal: true
+        onCloseRequested: hide()
+        onTimeRangeChanged: seconds => scopeView.setTimeRange(seconds)
+        onChannelRangeChanged: (channel, range) => scopeView.setChannelAxisRange(channel, range)
     }
 
     Component.onCompleted: {

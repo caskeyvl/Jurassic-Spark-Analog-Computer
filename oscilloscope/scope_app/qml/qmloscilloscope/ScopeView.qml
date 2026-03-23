@@ -17,7 +17,7 @@ Item {
     property var channelSeries: [null, null, null, null]
     property var channelEnabled: [false, false, false, false]
 
-    property int refreshHz: 60
+    property int refreshHz: 25
 
     ChartView {
         id: chartView
@@ -27,11 +27,11 @@ Item {
         animationOptions: ChartView.NoAnimation
         theme: ChartView.ChartThemeDark
 
-        ValueAxis { id: axisY1; min: -10; max: 10}
-        ValueAxis { id: axisY2; min: -10; max: 10}
-        ValueAxis { id: axisY3; min: -10; max: 10}
-        ValueAxis { id: axisY4; min: -10; max: 10}
-        ValueAxis { id: axisX; min: 0; max: root.samplesPerView - 1}
+        ValueAxis { id: axisY1; min: -10; max: 10; titleText: "Ch1 (V)"; titleVisible: true; labelsColor: "#FFD54A"; titleBrush: Qt.rgba(1, 0.835, 0.29, 1) }
+        ValueAxis { id: axisY2; min: -10; max: 10; titleText: "Ch2 (V)"; titleVisible: true; labelsColor: "#4DD0E1"; titleBrush: Qt.rgba(0.302, 0.816, 0.882, 1) }
+        ValueAxis { id: axisY3; min: -10; max: 10; titleText: "Ch3 (V)"; titleVisible: true; labelsColor: "#A5D6A7"; titleBrush: Qt.rgba(0.647, 0.839, 0.655, 1) }
+        ValueAxis { id: axisY4; min: -10; max: 10; titleText: "Ch4 (V)"; titleVisible: true; labelsColor: "#CE93D8"; titleBrush: Qt.rgba(0.808, 0.576, 0.847, 1) }
+        ValueAxis { id: axisX; min: 0; max: (root.samplesPerView - 1) * 0.001; titleText: "Time (s)"; titleVisible: true }
 
         LineSeries {
             id: channel1
@@ -39,6 +39,7 @@ Item {
             axisX: axisX
             axisY: axisY1
             useOpenGL: root.openGl
+            color: "#FFD54A"
         }
         LineSeries {
             id: channel2
@@ -46,6 +47,7 @@ Item {
             axisX: axisX
             axisY: axisY2
             useOpenGL: root.openGl
+            color: "#4DD0E1"
         }
         LineSeries {
             id: channel3
@@ -53,6 +55,7 @@ Item {
             axisX: axisX
             axisY: axisY3
             useOpenGL: root.openGl
+            color: "#A5D6A7"
         }
         LineSeries {
             id: channel4
@@ -60,6 +63,7 @@ Item {
             axisX: axisX
             axisY: axisY4
             useOpenGL: root.openGl
+            color: "#CE93D8"
         }
     }
 
@@ -77,7 +81,7 @@ Item {
     }
 
     onSamplesPerViewChanged: {
-        axisX.max = root.samplesPerView - 1
+        axisX.max = (root.samplesPerView - 1) * 0.001
         dataSource.setSamplesPerView(root.samplesPerView)
         root.redraw()
     }
@@ -103,6 +107,7 @@ Item {
         var newSeries = [null, null, null, null]
         var axesY = [axisY1, axisY2, axisY3, axisY4]
         var names = ["Channel1", "Channel2", "Channel3", "Channel4"]
+        var colors = ["#FFD54A", "#4DD0E1", "#A5D6A7", "#CE93D8"]
 
         for (var i = 0; i < 4; ++i) {
             var s
@@ -113,8 +118,8 @@ Item {
                 s.markerSize = 2
                 s.borderColor = "transparent"
             }
-
             s.useOpenGL = root.openGl
+            s.color = colors[i]
             s.visible = root.channelEnabled[i]
             newSeries[i] = s
         }
@@ -128,15 +133,19 @@ Item {
         //axisX.max = root.samplesPerView
     }
 
-    // function channelToggle(n) {
-    //     if ( n === 1 ) {
-    //         channel1.visible = channel1.visible ? channel1.disable : channel1.enable
-    //         if (channel1Enabled) dataSource.update(ch1Series)
-    //     } else if (n === 2) {
-    //         channel2.visible = channel2.visible ? channel2.disable : channel2.enable
-    //         if(channel2Enabled) dataSource.update(ch2Series)
-    //     }
-    // }
+    function setTimeRange(seconds) {
+        root.samplesPerView = Math.round(seconds * 1000)
+        axisX.max = seconds
+        dataSource.rearm()
+    }
+
+    function setChannelAxisRange(ch, range) {
+        var axes = [axisY1, axisY2, axisY3, axisY4]
+        if (ch < 0 || ch > 3) return
+        axes[ch].min = -range
+        axes[ch].max = range
+        dataSource.rearm()
+    }
 
     function setChannelEnabled(ch, enabled) {
         var idx = _toIndex(ch)
