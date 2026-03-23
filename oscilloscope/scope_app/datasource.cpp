@@ -30,7 +30,7 @@ static void fillSeries(QXYSeries* xy,
     for(int i = 0; i < N; ++i) {
         int idx = start + i;
         if(idx >= ringSize) idx -= ringSize;
-        scratch[i].setX(i);
+        scratch[i].setX(i * 0.001f);
         scratch[i].setY(buf[idx]);
     }
 
@@ -51,10 +51,14 @@ void DataSource::armTrigger() {
     m_renderEnabled = false;
 }
 
-void DataSource::setTriggerLevel(float level) {
-    m_trigger.level = level;
+void DataSource::rearm() {
     armTrigger();
 }
+
+void DataSource::setTriggerLevel(float level) {
+    m_trigger.level = level;
+}
+
 
 void DataSource::setSamplesPerView(int n) {
     if (n < 16) n = 16;
@@ -100,9 +104,9 @@ void DataSource::sample() {
     m_ring.push(s);
 
     const float trigSample = s[m_trigger.channel];
-    if(!m_renderEnabled && m_trigger.update(trigSample)) {
+    if (!m_renderEnabled && m_trigger.update(trigSample))
         m_renderEnabled = true;
-    }
+
     emit frameReady();
 }
 
@@ -111,5 +115,4 @@ void DataSource::setTriggerChannel(int channel) {
     if(channel >= kChannels) channel = kChannels - 1;
 
     m_trigger.channel = channel;
-    armTrigger();
 }

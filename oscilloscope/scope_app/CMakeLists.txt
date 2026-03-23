@@ -19,6 +19,10 @@ qt_add_executable(qmloscilloscope
     main.cpp
     qml/qmloscilloscope/ToggleButton.qml
     qml/qmloscilloscope/SnapperSlider.qml
+    qml/qmloscilloscope/TriggerSettings.qml
+    qml/qmloscilloscope/ControlPanel.qml
+    qml/qmloscilloscope/SettingsPanel.qml
+    qml/qmloscilloscope/AxisSettings.qml
 )
 
 set_target_properties(qmloscilloscope PROPERTIES
@@ -43,6 +47,8 @@ set(resources_resource_files
     "qml/qmloscilloscope/SettingsPanel.qml"
     "qml/qmloscilloscope/ToggleButton.qml"
     "qml/qmloscilloscope/SnapperSlider.qml"
+    "qml/qmloscilloscope/TriggerSettings.qml"
+    "qml/qmloscilloscope/AxisSettings.qml"
 )
 
 qt6_add_resources(qmloscilloscope "resources"

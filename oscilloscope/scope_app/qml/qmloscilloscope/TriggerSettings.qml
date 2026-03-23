@@ -12,8 +12,6 @@ Item {
 
     signal closeRequested()
     signal testToggled(bool on)
-    signal triggerSettingsRequested()
-    signal axisSettingsRequested()
 
     function show() { open = true }
     function hide() { open = false }
@@ -31,27 +29,6 @@ Item {
         enabled: ready
         NumberAnimation { duration: 1000; easing.type: Easing.InOutQuart }
     }
-
-    // Scrim Rectangle (uncomment)
-    // Rectangle {
-    //     id: scrim
-    //     visible: root.modal && root.open
-    //     anchors.fill: parent ? parent : undefined
-    //     parent: root.parent
-    //     z: root.z - 1
-    //     color: "#000000"
-    //     opacity: 0.35
-
-    //     Behavior on opacity {
-    //         NumberAnimation { duration : 180; easing.type: Easing.InOutCubic }
-    //     }
-
-    //     MouseArea {
-    //         anchors.fill: parent
-    //         enabled: root.closeOnScrim
-    //         onClicked: root.hide()
-    //     }
-    // }
 
     Rectangle {
         anchors.fill: parent
@@ -74,7 +51,7 @@ Item {
         spacing: 8
 
         Text {
-            text: "Settings"
+            text: "Trigger Settings"
             color: "white"
             font.pointSize: 30
             anchors.horizontalCenter: parent.horizontalCenter
@@ -82,41 +59,55 @@ Item {
 
         Rectangle { height: 1; width: parent.width; color: "#444" }
 
-        ToggleButton {
-            id: triggerSettingsButton
-            text: "Trigger Settings"
-            checkable: false
+        MultiButton {
+            id: triggerOnButton
+            text: "Trigger on: "
+            items: ["Ch1", "Ch2", "Ch3", "Ch4"]
+            currentSelection: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            height: 80
 
+            onSelectionChanged: dataSource.setTriggerChannel(Number(currentSelection))
+        }
+
+        SnapperSlider {
+            id: triggerSlider
+            from: -12
+            to: 12
+            value: 2
+            stepSize: 0.5
+            width: parent.width
+
+            onValueChanged: dataSource.setTriggerLevel(value)
+        }
+
+        Text {
+            id: sliderValue
+            text: "Trigger Level: " + triggerSlider.value.toFixed(1) + " V"
+            color: "White"
+            font.pixelSize: 18
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Rectangle { height: 1; width: parent.width; color: "#444" }
+
+        ToggleButton {
+            text: "Re-arm"
+            checkable: false
             checked: true
             textCheckedColor: "black"
             accentColor: "#cccccc"
-
             width: parent.width
-            height: 150
-
-            onClicked: triggerSettingsRequested()
+            height: 80
+            onClicked: dataSource.rearm()
         }
-
-        ToggleButton {
-            id: axisSettingsButton
-            text: "Axis Settings"
-            checkable: false
-
-            checked: true
-            textCheckedColor: "black"
-            accentColor: "#cccccc"
-
-            width: parent.width
-            height: 150
-
-
-            onClicked: axisSettingsRequested()
-        }
-
-        /* ---- Axis adjustment ---- */
     }
+
+    Rectangle { height: 1; width: parent.width; color: "#444" }
+
     ToggleButton {
-        text: "Close"
+        text: "Back"
         checkable: false
 
         checked: true
