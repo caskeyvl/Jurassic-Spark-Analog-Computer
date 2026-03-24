@@ -48,8 +48,6 @@ git commit -m "integrator spice simulation added"
 git push origin spice
 ```
 
-Please, TRIPLE CHECK that you are in the correct branch before commiting and pushing your changes (i.e. DO NOT push directly to main). This will make merge conflicts much more annoying to solve, and gives us the ability to modularize and further version control our work. Merges to main will happen through pull requests ONLY, and the only person who is allowed to push to main is Logan (mainly for adding to the readme file). 
-
 ### Work being finished/pull requests
 
 If you have finished work on a branch, and feel that branch is ready to be merged to main, follow these steps: 
@@ -67,5 +65,4 @@ If you are not confident about creating this pull request, please just reach out
 
 [BOM](https://docs.google.com/spreadsheets/d/1X1U5svekkfRvvx4M4c1IeXdciezWEVZrIU-C1A8QEh0)
 
-##CAD Images
 [Images and Drawings](https://docs.google.com/document/d/1QA50hwxr3ZcNsiclymAVjyM4m0BCg9A4m2U9kV9aPGA/edit?usp=sharing)
