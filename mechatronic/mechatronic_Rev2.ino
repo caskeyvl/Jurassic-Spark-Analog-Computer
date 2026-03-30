@@ -18,13 +18,35 @@ const int ctrlSigPin = A0;
 // Calibration values
 // -----------------------------
 // Sensor reading when the ball is at the very bottom of the tube
-const float SENSOR_BOTTOM_READING_IN = 22.5;
+const float SENSOR_BOTTOM_READING_IN = 23;
 
 // Sensor reading when the ball is at the very top of the tube
-const float SENSOR_TOP_READING_IN = 2.0;
+const float SENSOR_TOP_READING_IN = 2.5;
 
 // Actual physical height of the tube
-const float REAL_TUBE_HEIGHT_IN = 35.0;
+const float REAL_TUBE_HEIGHT_IN = 27.0;
+
+
+// PWM output mapping for sensor
+const uint8_t PWM_AT_TOP = 255; 
+const uint8_t PWM_AT_BOTTOM = 127;
+
+
+// -----------------------------
+// Bottom-mode tuning
+// -----------------------------
+const float BOTTOM_ENTER_RAW = 20.8;   // enter bottom mode when raw reading gets this large
+const float BOTTOM_EXIT_RAW  = 19.5;   // leave bottom mode only after ball clearly rises
+
+const float BOTTOM_KICK_DUTY = 61.5;   // short boost
+const float BOTTOM_HOLD_DUTY = 60.7;   // hold near desired bottom
+
+const unsigned long BOTTOM_KICK_TIME_MS = 300;  // kick duration
+
+bool inBottomMode = false;
+bool bottomKickActive = false;
+unsigned long bottomKickStartMs = 0;
+
 
 void setup() {
   Serial.begin(115200);
@@ -59,10 +81,10 @@ void loop() {
   int adc = analogRead(ctrlSigPin);
 
   float dutyPercent = 62.0 + (10.0 * adc / 1023.0);  // 0V->57%, 2.5V->67%, 5V->77%
-  uint16_t ocr = (uint32_t)(dutyPercent * (ICR1 + 1) / 100.0);
+  // uint16_t ocr = (uint32_t)(dutyPercent * (ICR1 + 1) / 100.0);
 
-  if (ocr > ICR1) ocr = ICR1;
-  OCR1A = ocr;
+  // if (ocr > ICR1) ocr = ICR1;
+  // OCR1A = ocr;
 
   // -----------------------------
   // ToF distance measurement -> PWM output on D5
@@ -88,14 +110,14 @@ void loop() {
     // If the ball is near the top, force distance to 0 inches
     // -----------------------------
     if (raw_distance_in <= SENSOR_TOP_READING_IN) {
-      distance_in = 0.0;
+      distance_in = 0;
     }
 
     // -----------------------------
     // BOTTOM saturation
     // If the ball is near the bottom, force distance to 35 inches
     // -----------------------------
-    else if (raw_distance_in >= 22.5) {
+    else if (raw_distance_in >= SENSOR_BOTTOM_READING_IN) {
       distance_in = REAL_TUBE_HEIGHT_IN;
     }
 
@@ -115,36 +137,77 @@ void loop() {
 
   } else {
     // If the sensor reading is invalid, set distance to zero
-    raw_distance_in = 0.0;
+    //raw_distance_in = 0.0;
     distance_in = 0.0;
+  }
+  // -----------------------------
+  // Bottom mode state machine
+  // -----------------------------
+  if (!inBottomMode && raw_distance_in >= BOTTOM_ENTER_RAW) {
+    inBottomMode = true;
+    bottomKickActive = true;
+    bottomKickStartMs = millis();
+  }
+
+  if (inBottomMode && raw_distance_in <= BOTTOM_EXIT_RAW) {
+    inBottomMode = false;
+    bottomKickActive = false;
+  }
+
+  if (bottomKickActive && (millis() - bottomKickStartMs >= BOTTOM_KICK_TIME_MS)) {
+    bottomKickActive = false;
   }
 
   // -----------------------------
+  // Override duty in bottom mode
+  // -----------------------------
+  if (inBottomMode) {
+    if (bottomKickActive) {
+      dutyPercent = BOTTOM_KICK_DUTY;
+    } else {
+      dutyPercent = BOTTOM_HOLD_DUTY;
+    }
+  }
+
+  // Safety clamp
+  if (dutyPercent < 0.0) dutyPercent = 0.0;
+  if (dutyPercent > 100.0) dutyPercent = 100.0;
+
+  uint16_t ocr = (uint16_t)(dutyPercent * (ICR1 + 1) / 100.0 + 0.5);
+  if (ocr > ICR1) ocr = ICR1;
+  OCR1A = ocr;
+  // -----------------------------
   // Convert distance to PWM (0–255)
-  // 35 inches -> PWM = 0
+  // 35 inches -> PWM = 127 (get 12 volts out)
   // 0 inches  -> PWM = 255
   // -----------------------------
-  uint8_t pwmValue = (uint8_t)(255.0 * (1.0 - distance_in / REAL_TUBE_HEIGHT_IN));
+  float frac = distance_in / REAL_TUBE_HEIGHT_IN;
+  uint8_t pwmValue = (uint8_t)(PWM_AT_TOP - frac * (PWM_AT_TOP - PWM_AT_BOTTOM));
 
   analogWrite(TOF_PWM, pwmValue);
 
   // -----------------------------
   // Serial debug output
   // -----------------------------
-  Serial.print("A0 adc=");
+  // Serial.print("A0 adc=");
+  // Serial.print(adc);
+
+  // Serial.print("  Fan OCR1A=");
+  // float fanPWMVal = (OCR1A / 1023) * 100;
+  // Serial.print((OCR1A / 1023) * 100);
+
+  // Serial.print("  RawDist(in)=");
+  // Serial.print(raw_distance_in);
+
+  // Serial.print("  MappedDist(in)=");
+  // Serial.print(distance_in);
+
+  // Serial.print("  PWM5=");
+  // Serial.println(pwmValue);
   Serial.print(adc);
-
-  Serial.print("  Fan OCR1A=");
-  Serial.print(OCR1A);
-
-  Serial.print("  RawDist(in)=");
+  Serial.print(" ");
   Serial.print(raw_distance_in);
-
-  Serial.print("  MappedDist(in)=");
-  Serial.print(distance_in);
-
-  Serial.print("  PWM5=");
-  Serial.println(pwmValue);
-  
+  Serial.print(" ");
+  Serial.println(distance_in);
   delay(50);
 }
