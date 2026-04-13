@@ -26,6 +26,11 @@ const float SENSOR_TOP_READING_IN = 2.0;
 // Actual physical height of the tube
 const float REAL_TUBE_HEIGHT_IN = 35.0;
 
+
+// PWM output mapping for sensor
+const uint8_t PWM_AT_TOP = 255;
+const uint8_t PWM_AT_BOTTOM = 127;
+
 void setup() {
   Serial.begin(115200);
 
@@ -37,7 +42,7 @@ void setup() {
   TCCR1B = 0;
   TCNT1 = 0;
 
-  ICR1 = 1279;  // TOP value -> 25 kHz PWM frequency
+  ICR1 = 639;  // TOP value -> 25 kHz PWM frequency
   OCR1A = 0;    // Start with 0% duty cycle
 
   TCCR1A = (1 << COM1A1) | (1 << WGM11);
@@ -46,10 +51,14 @@ void setup() {
   // ---- Initialize the ToF sensor ----
   if (!lox.begin()) {
     Serial.println("Failed to boot VL53L0X");
-    while (1);
+    while (1)
+      ;
   }
 
   Serial.println("VL53L0X Ready");
+
+  OCR1A = ICR1;     // kick start fan
+  delay (500);
 }
 
 void loop() {
@@ -58,7 +67,7 @@ void loop() {
   // -----------------------------
   int adc = analogRead(ctrlSigPin);
 
-  float dutyPercent = 62.0 + (10.0 * adc / 1023.0);  // 0V->57%, 2.5V->67%, 5V->77%
+  float dutyPercent = 59.0 + (15.0 * adc / 1023.0);  // 0V->57%, 2.5V->67%, 5V->77%
   uint16_t ocr = (uint32_t)(dutyPercent * (ICR1 + 1) / 100.0);
 
   if (ocr > ICR1) ocr = ICR1;
@@ -106,8 +115,7 @@ void loop() {
     // -----------------------------
     else {
       distance_in =
-        (raw_distance_in - SENSOR_TOP_READING_IN) *
-        (REAL_TUBE_HEIGHT_IN / (SENSOR_BOTTOM_READING_IN - SENSOR_TOP_READING_IN));
+        (raw_distance_in - SENSOR_TOP_READING_IN) * (REAL_TUBE_HEIGHT_IN / (SENSOR_BOTTOM_READING_IN - SENSOR_TOP_READING_IN));
 
       if (distance_in < 0.0) distance_in = 0.0;
       if (distance_in > REAL_TUBE_HEIGHT_IN) distance_in = REAL_TUBE_HEIGHT_IN;
@@ -121,10 +129,11 @@ void loop() {
 
   // -----------------------------
   // Convert distance to PWM (0–255)
-  // 35 inches -> PWM = 0
+  // 35 inches -> PWM = 127 (get 12 volts out)
   // 0 inches  -> PWM = 255
   // -----------------------------
-  uint8_t pwmValue = (uint8_t)(255.0 * (1.0 - distance_in / REAL_TUBE_HEIGHT_IN));
+  float frac = distance_in / REAL_TUBE_HEIGHT_IN;
+  uint8_t pwmValue = (uint8_t)(PWM_AT_TOP - frac * (PWM_AT_TOP - PWM_AT_BOTTOM));
 
   analogWrite(TOF_PWM, pwmValue);
 
@@ -145,6 +154,6 @@ void loop() {
 
   Serial.print("  PWM5=");
   Serial.println(pwmValue);
-  
+
   delay(50);
 }
