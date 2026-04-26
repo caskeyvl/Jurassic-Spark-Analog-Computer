@@ -4,158 +4,189 @@
 #ifndef DATASOURCE_H
 #define DATASOURCE_H
 
-#include <QList>
 #include <QObject>
 #include <QPointF>
-#include <QTimer>
+#include <QVector>
+
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <cstdint>
+#include <mutex>
+#include <thread>
 
 QT_FORWARD_DECLARE_CLASS(QAbstractSeries)
 QT_FORWARD_DECLARE_CLASS(QQuickView)
 
 /*!
  * \class DataSource
- * \brief The C++ backend for the oscilloscope. Manages sampling, buffering,
- *        trigger detection, and data delivery to the QML chart layer.
+ * \brief C++ backend for the oscilloscope.
  *
- * DataSource runs a 1ms QTimer that continuously generates (or, in production,
- * reads) one sample per channel and pushes it into a circular ring buffer.
- * The QML ScopeView calls updateChannel() at ~25Hz to pull the latest frame
- * into a QtCharts series for rendering.
+ * A dedicated DRDY-interrupt thread (adcThreadFunc) reads the ADS1263 over SPI,
+ * cycling through 4 single-ended channels (AIN0–AIN3 vs AINCOM).  Samples are
+ * pushed into a mutex-protected ring buffer.  The QML 25 Hz refresh timer calls
+ * updateChannel() from the main thread, which holds the same mutex while copying
+ * data into a QtCharts series.
  *
- * Exposed to QML via QQmlContext::setContextProperty("dataSource", ...).
+ * On non-Linux hosts (or when /dev/spidev0.0 is unavailable) the thread falls
+ * back to a synthetic signal generator so the UI still works on the desktop.
+ *
+ * Hardware: Waveshare High-Precision AD HAT (ADS1263)
+ *   DRDY → BCM 17   CS → BCM 22   RST → BCM 18
+ *   SPI  → /dev/spidev0.0, Mode 1, 4 MHz
+ *   AINCOM wired to 2.5 V rail (= 12 V physical mid-rail)
+ *   Voltage divider: 0–24 V physical → 0–5 V ADC input
+ *   ADC1 bipolar, internal 2.5 V reference → ±2.5 V differential → ±12 V display
  */
 class DataSource : public QObject
 {
     Q_OBJECT
 public:
     explicit DataSource(QQuickView *appViewer, QObject *parent = nullptr);
+    ~DataSource();
 
-    /*! Sets the voltage level at which the trigger fires. */
     Q_INVOKABLE void setTriggerLevel(float level);
-
-    /*! Sets which channel (0–3) the trigger monitors. */
     Q_INVOKABLE void setTriggerChannel(int channel);
-
-    /*! Sets how many samples are displayed per frame. Minimum 16. */
     Q_INVOKABLE void setSamplesPerView(int n);
 
-    /*! Re-arms the trigger so it waits for the next rising edge. */
+    /*!
+     * Sets the desired scrolling window duration in real seconds.
+     * samplesPerView is recalibrated automatically from measured fps every
+     * 200 frames so the window stays accurate regardless of actual throughput.
+     */
+    Q_INVOKABLE void setWindowSeconds(double s);
+
+    /*!
+     * Sets the EMA smoothing factor applied to each channel before the ring
+     * buffer.  alpha=1.0 = no filter (raw); alpha=0.05 = heavy smoothing.
+     * Useful for reducing high-frequency noise and inter-channel coupling
+     * artifacts from the FIR filter on the ADS1263.
+     */
+    Q_INVOKABLE void setFilterAlpha(float alpha);
     Q_INVOKABLE void rearm();
-
-    /*! Starts the 1ms sampling timer. No-op if already running. */
     Q_INVOKABLE void start();
-
-    /*! Stops the sampling timer, freezing the display. */
     Q_INVOKABLE void stop();
 
     /*!
-     * Fills \a series with the latest \c samplesPerView samples from
-     * \a channel. Called by the QML refresh timer for each enabled channel.
-     * Does nothing if the trigger has not yet fired.
+     * Copies the latest \c m_samplesPerView samples for \a channel into
+     * \a series.  Called by the QML 25 Hz timer on the main thread.
+     * No-ops until the trigger has fired.
      */
     Q_INVOKABLE void updateChannel(int channel, QAbstractSeries *series);
 
     /*!
-     * Exports the currently displayed frame to a CSV file at \a filepath.
-     * Columns: time_s, ch1, ch2, ch3, ch4. Samples are written
-     * oldest-to-newest, matching the order shown on screen.
-     * \return true on success, false if the file could not be opened.
+     * Returns the actual wall-clock duration (seconds) of the samples currently
+     * in view.  Use this as axisX.max so the time axis reflects real elapsed
+     * time rather than nominal ADC rate.
      */
-    Q_INVOKABLE bool exportCsv(const QString &filepath);
+    Q_INVOKABLE double viewDuration() const;
+
+    /*!
+     * Returns the measured frame rate (frames/s) estimated from timestamps in
+     * the ring buffer.  Returns 0 if fewer than 100 frames have been collected.
+     * Use this in setTimeRange to convert seconds → sample count correctly.
+     */
+    Q_INVOKABLE double measuredFrameRate() const;
+
+    /*!
+     * Exports the current view frame to CSV.
+     * \a enabledChannels is a QVariantList of 4 bools (index 0–3); only
+     * channels with true are written as columns.
+     * \return true on success.
+     */
+    Q_INVOKABLE bool exportCsv(const QString &filepath, const QVariantList &enabledChannels);
+
 
 signals:
-    /*! Emitted after every sample, at the rate of the sampling timer. */
     void frameReady();
-
-private slots:
-    void sample();
 
 private:
     static constexpr int kChannels = 4;
 
-    /*!
-     * \brief Circular ring buffer holding the most recent samples for all channels.
-     *
-     * Each channel occupies one QVector<float> of \c size elements. The write
-     * head advances modulo \c size, so older samples are overwritten once the
-     * buffer is full. Reading a contiguous view requires unwrapping the index
-     * arithmetic — see fillSeries() and exportCsv().
-     */
+    // ── Ring buffer ───────────────────────────────────────────────────────
     struct ScopeRing {
-        std::array<QVector<float>, kChannels> ch; /*!< Per-channel sample storage. */
-        int size = 0;   /*!< Capacity of each channel buffer. */
-        int write = 0;  /*!< Index where the next sample will be written. */
+        std::array<QVector<float>, kChannels> ch;
+        QVector<double> timestamps; ///< steady_clock seconds relative to DataSource::m_startTime
+        int size  = 0;
+        int write = 0;
 
-        /*! Allocates each channel buffer to \a n samples and resets the write head. */
         void resize(int n) {
             size = n;
             for (auto &v : ch) v.resize(n);
+            timestamps.resize(n, 0.0);
             write = 0;
         }
 
-        /*! Writes one sample per channel from \a s and advances the write head. */
-        void push(const std::array<float, kChannels>& s) {
-            for(int c = 0; c < kChannels; ++c) ch[c][write] = s[c];
+        void push(const std::array<float, kChannels> &s, double ts) {
+            for (int c = 0; c < kChannels; ++c) ch[c][write] = s[c];
+            timestamps[write] = ts;
             write = (write + 1) % size;
         }
 
-        /*!
-         * Returns the index of the most recently written sample.
-         * Since \c write points to the next write slot, the last written
-         * slot is \c write-1 (wrapped).
-         */
         int lastIndex() const {
             if (size <= 0) return 0;
             int end = write - 1;
-            if (end < 0) end += size;
-            return end;
+            return (end < 0) ? end + size : end;
         }
     };
 
-    /*!
-     * \brief Rising-edge trigger state machine.
-     *
-     * The trigger arms itself and waits for the monitored channel to cross
-     * \c level from below. Once fired it disarms until rearm() is called,
-     * preventing the display from re-triggering mid-frame.
-     */
+    // ── Level trigger ─────────────────────────────────────────────────────
+    // Fires as soon as the trigger channel reads >= level (no need to come
+    // from below first).  Armed again only after an explicit rearm() call.
     struct Trigger {
-        int channel = 0;    /*!< Index of the channel to monitor (0–3). */
-        float level = 0.0f; /*!< Voltage threshold for the rising edge. */
-        bool enabled = true;
-        bool armed = true;
-        float prev = 0.0f;  /*!< Sample value from the previous tick, used for edge detection. */
+        int   channel = 0;
+        float level   = 1.0f;
+        bool  armed   = true;
 
-        /*!
-         * Evaluates the trigger against \a current. Returns true (fires) when
-         * \c prev was below \c level and \c current meets or exceeds it.
-         * Disarms itself immediately after firing.
-         */
         bool update(float current) {
-            if(!enabled || !armed) { prev = current; return false; }
-            bool fired = (prev < level && current >= level);
-            prev = current;
-            if(fired) armed = false;
-            return fired;
+            if (!armed) return false;
+            if (current >= level) { armed = false; return true; }
+            return false;
         }
-
-        /*! Re-arms the trigger so it can fire again on the next rising edge. */
         void rearm() { armed = true; }
     };
 
-    /*! Re-arms the trigger and suppresses rendering until the next trigger event. */
-    void armTrigger();
+    // ── Internal helpers ──────────────────────────────────────────────────
+    void  armTrigger();
+    bool  initHardware();
+    void  shutdownHardware();
+    void  adcThreadFunc();
 
+    void  spiXfer(const uint8_t *tx, uint8_t *rx, int len);
+    void  spiWriteCmd(uint8_t cmd);
+    void  spiWriteReg(uint8_t reg, uint8_t data);
+
+    // ── Members ───────────────────────────────────────────────────────────
     QQuickView *m_appViewer = nullptr;
-    QTimer m_sampleTimer;   /*!< Fires every 1ms to drive the sampling loop. */
 
-    ScopeRing m_ring;       /*!< Circular buffer holding all channel data. */
-    Trigger m_trigger;
+    // Linux file descriptors (all -1 on non-Linux / init failure)
+    int m_spiFd  = -1;   ///< /dev/spidev0.0
+    int m_drdyFd = -1;   ///< BCM 17 sysfs value file (poll POLLPRI for falling edge)
+    int m_csFd   = -1;   ///< BCM 22 sysfs value file (output, driven low for session)
+    int m_rstFd  = -1;   ///< BCM 18 sysfs value file (output)
 
-    int m_samplesPerView = 5000; /*!< Number of samples shown in one screen frame. */
-    bool m_renderEnabled = false; /*!< Set true by the trigger; gates updateChannel(). */
+    std::thread       m_adcThread;
+    std::atomic<bool> m_running{false};
 
-    /*! Per-channel scratch buffers for QPointF data passed to QtCharts. */
+    // Guards: m_ring, m_trigger, m_renderEnabled
+    mutable std::mutex m_ringMutex;
+
+    ScopeRing m_ring;
+    Trigger   m_trigger;
+
+    double m_windowSeconds       = 5.0;  ///< desired scroll window; drives auto-calibration
+    int  m_samplesPerView       = 9000; ///< recalibrated automatically once fps is known
+
+    // ── Per-channel EMA filter ────────────────────────────────────────────
+    float m_emaAlpha = 1.0f;  ///< 1.0 = off; lower = more smoothing
+    std::array<float, kChannels> m_emaState{}; ///< per-channel filter state
+    bool m_renderEnabled        = false;
+    int  m_samplesAfterTrigger  = 0;   ///< frames collected since trigger fired
+
+    std::chrono::steady_clock::time_point m_startTime; ///< Set in start(); basis for ring timestamps
+
+    float m_synthPhase = -4.0f; ///< Phase accumulator for synthetic fallback
+
     std::array<QVector<QPointF>, kChannels> m_scratchPoints;
 };
 

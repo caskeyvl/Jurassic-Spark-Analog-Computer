@@ -10,7 +10,8 @@ Item {
 
     property bool openGl: openGLSupported
     property bool running: false
-    property int samplesPerView: 1024
+    property int samplesPerView: 9000
+    readonly property real frameRate: 1800.0
 
     function _toIndex(ch) { return Number(ch) - 1}
 
@@ -27,11 +28,11 @@ Item {
         animationOptions: ChartView.NoAnimation
         theme: ChartView.ChartThemeDark
 
-        ValueAxis { id: axisY1; min: -10; max: 10; titleText: "Ch1 (V)"; titleVisible: true; labelsColor: "#FFD54A"; titleBrush: Qt.rgba(1, 0.835, 0.29, 1) }
-        ValueAxis { id: axisY2; min: -10; max: 10; titleText: "Ch2 (V)"; titleVisible: true; labelsColor: "#4DD0E1"; titleBrush: Qt.rgba(0.302, 0.816, 0.882, 1) }
-        ValueAxis { id: axisY3; min: -10; max: 10; titleText: "Ch3 (V)"; titleVisible: true; labelsColor: "#A5D6A7"; titleBrush: Qt.rgba(0.647, 0.839, 0.655, 1) }
-        ValueAxis { id: axisY4; min: -10; max: 10; titleText: "Ch4 (V)"; titleVisible: true; labelsColor: "#CE93D8"; titleBrush: Qt.rgba(0.808, 0.576, 0.847, 1) }
-        ValueAxis { id: axisX; min: 0; max: (root.samplesPerView - 1) * 0.001; titleText: "Time (s)"; titleVisible: true }
+        ValueAxis { id: axisY1; min: -10; max: 10; titleText: "Ch1 (V)"; titleVisible: true; labelsColor: "#FFD54A"; titleBrush: Qt.rgba(1, 0.835, 0.29, 1); visible: false }
+        ValueAxis { id: axisY2; min: -10; max: 10; titleText: "Ch2 (V)"; titleVisible: true; labelsColor: "#4DD0E1"; titleBrush: Qt.rgba(0.302, 0.816, 0.882, 1); visible: false }
+        ValueAxis { id: axisY3; min: -10; max: 10; titleText: "Ch3 (V)"; titleVisible: true; labelsColor: "#A5D6A7"; titleBrush: Qt.rgba(0.647, 0.839, 0.655, 1); visible: false }
+        ValueAxis { id: axisY4; min: -10; max: 10; titleText: "Ch4 (V)"; titleVisible: true; labelsColor: "#CE93D8"; titleBrush: Qt.rgba(0.808, 0.576, 0.847, 1); visible: false }
+        ValueAxis { id: axisX; min: 0; max: 5.0; titleText: "Time (s)"; titleVisible: true }
 
         LineSeries {
             id: channel1
@@ -77,23 +78,26 @@ Item {
 
     Component.onCompleted: {
         root.channelSeries = [channel1, channel2, channel3, channel4]
-        dataSource.setSamplesPerView(root.samplesPerView);
-    }
-
-    onSamplesPerViewChanged: {
-        axisX.max = (root.samplesPerView - 1) * 0.001
-        dataSource.setSamplesPerView(root.samplesPerView)
-        root.redraw()
+        dataSource.setWindowSeconds(5.0)
     }
 
     function redraw() {
+        var anyEnabled = false
         for (var i = 0; i < 4; ++i) {
             var s = root.channelSeries[i]
             if (root.channelEnabled[i] && s) {
                 dataSource.updateChannel(i, s)
+                anyEnabled = true
             } else if (s) {
                 s.clear()
             }
+        }
+        if (anyEnabled) {
+            var dur = dataSource.viewDuration()
+            // Only update axisX.max when the duration changes by more than 2%
+            // to avoid the axis label jittering on every frame once scrolling.
+            if (dur > 0 && Math.abs(dur - axisX.max) / Math.max(axisX.max, 0.001) > 0.02)
+                axisX.max = dur
         }
     }
 
@@ -134,8 +138,7 @@ Item {
     }
 
     function setTimeRange(seconds) {
-        root.samplesPerView = Math.round(seconds * 1000)
-        axisX.max = seconds
+        dataSource.setWindowSeconds(seconds)
         dataSource.rearm()
     }
 
@@ -152,6 +155,9 @@ Item {
         if (idx < 0 || idx > 3) return
 
         root.channelEnabled[idx] = enabled
+
+        var axes = [axisY1, axisY2, axisY3, axisY4]
+        axes[idx].visible = enabled
 
         var s = root.channelSeries[idx]
         if(s) {

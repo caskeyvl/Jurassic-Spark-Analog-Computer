@@ -68,11 +68,16 @@ Item {
         onChannelRangeChanged: (channel, range) => scopeView.setChannelAxisRange(channel, range)
     }
 
-    ExportDataPanel { 
+    ExportDataPanel {
         id: exportDataDrawer
         z: 100
         modal: true
+        scopeViewRef: scopeView
         onCloseRequested: hide()
+    }
+
+    SplashScreen {
+        anchors.fill: parent
     }
 
     Component.onCompleted: {

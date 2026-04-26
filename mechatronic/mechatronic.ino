@@ -1,159 +1,103 @@
 #include <Wire.h>
-#include "Adafruit_VL53L0X.h"
-
-// Sensor reading when the ball is at the very bottom of the tube
-// (Due to tube reflections, the sensor reads ~18 in instead of the actual 35 in)
-
-// Linear remapping converts the compressed sensor range (2–18 in)
-// into the actual physical height range (0–35 in)
+#include <VL53L1X.h>
 
 #define FAN_PWM 9
-#define TOF_PWM 5  // PWM output used to represent ToF distance
+#define TOF_PWM 5
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+// ROI size (SPADs): 4 is the minimum, 16 is full FOV.
+// Smaller = narrower field of view = less acrylic tube wall in the measurement.
+// Start at 4 and increase if you get frequent signal-fail readings.
+#define ROI_SIZE 4
+
+VL53L1X sensor;
 
 const int ctrlSigPin = A0;
 
-// -----------------------------
-// Calibration values
-// -----------------------------
-// Sensor reading when the ball is at the very bottom of the tube
-const float SENSOR_BOTTOM_READING_IN = 22.5;
-
-// Sensor reading when the ball is at the very top of the tube
-const float SENSOR_TOP_READING_IN = 2.0;
-
-// Actual physical height of the tube
-const float REAL_TUBE_HEIGHT_IN = 35.0;
-
-
-// PWM output mapping for sensor
-const uint8_t PWM_AT_TOP = 255;
+const uint8_t PWM_AT_TOP    = 255;
 const uint8_t PWM_AT_BOTTOM = 127;
+const float   MAX_RANGE_MM  = 889.0;  // 35 in -- physical tube height
+
+int16_t distance_mm = 0;
+
+void busRecover() {
+  pinMode(SCL, OUTPUT);
+  pinMode(SDA, OUTPUT);
+  digitalWrite(SDA, HIGH);
+  for (int i = 0; i < 9; i++) {
+    digitalWrite(SCL, HIGH); delayMicroseconds(5);
+    digitalWrite(SCL, LOW);  delayMicroseconds(5);
+  }
+  digitalWrite(SDA, LOW);  delayMicroseconds(5);
+  digitalWrite(SCL, HIGH); delayMicroseconds(5);
+  digitalWrite(SDA, HIGH); delayMicroseconds(5);
+  TWCR = 0;
+  pinMode(SCL, INPUT);
+  pinMode(SDA, INPUT);
+}
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Serial OK");
 
-  pinMode(FAN_PWM, OUTPUT);  // D9 = OC1A (fan control PWM)
-  pinMode(TOF_PWM, OUTPUT);  // D5 PWM output for distance signal
+  pinMode(FAN_PWM, OUTPUT);
+  pinMode(TOF_PWM, OUTPUT);
 
-  // ---- Timer1 configuration: 25 kHz PWM on D9 (OC1A) ----
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TCNT1 = 0;
-
-  ICR1 = 639;  // TOP value -> 25 kHz PWM frequency
-  OCR1A = 0;    // Start with 0% duty cycle
-
+  // Timer1: 25 kHz PWM on D9 (OC1A)
+  TCCR1A = 0; TCCR1B = 0; TCNT1 = 0;
+  ICR1   = 639;
+  OCR1A  = 0;
   TCCR1A = (1 << COM1A1) | (1 << WGM11);
-  TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS10);
+  TCCR1B = (1 << WGM13)  | (1 << WGM12) | (1 << CS10);
 
-  // ---- Initialize the ToF sensor ----
-  if (!lox.begin()) {
-    Serial.println("Failed to boot VL53L0X");
-    while (1)
-      ;
+  busRecover();
+  Wire.begin();
+  Wire.setClock(400000);
+  delay(100);
+
+  sensor.setTimeout(500);
+  if (!sensor.init()) {
+    Serial.println("Failed to init VL53L1X");
+    while (1) delay(10);
   }
+  Serial.println("VL53L1X ready");
 
-  Serial.println("VL53L0X Ready");
+  sensor.setDistanceMode(VL53L1X::Long);
+  sensor.setMeasurementTimingBudget(50000);
+  // Narrow the ROI to reduce tube-wall reflections.
+  sensor.setROISize(ROI_SIZE, ROI_SIZE);
+  sensor.startContinuous(50);
 
-  OCR1A = ICR1;     // kick start fan
-  delay (500);
+  delay(100);
 }
 
 void loop() {
-  // -----------------------------
-  // Existing fan control (unchanged)
-  // -----------------------------
+  // Fan control -- direct map: 0V -> off, 5V -> full speed
   int adc = analogRead(ctrlSigPin);
-
-  float dutyPercent = 59.0 + (15.0 * adc / 1023.0);  // 0V->57%, 2.5V->67%, 5V->77%
-  uint16_t ocr = (uint32_t)(dutyPercent * (ICR1 + 1) / 100.0);
-
-  if (ocr > ICR1) ocr = ICR1;
+  uint16_t ocr = (uint32_t)adc * ICR1 / 1023;
   OCR1A = ocr;
 
-  // -----------------------------
-  // ToF distance measurement -> PWM output on D5
-  // -----------------------------
-  VL53L0X_RangingMeasurementData_t measure;
-  lox.rangingTest(&measure, false);
+  // Distance
+  uint16_t reading = sensor.read(false);
 
-  float raw_distance_in = 0.0;
-  float distance_in = 0.0;
-
-  if (measure.RangeStatus != 4) {
-    float distance_mm = measure.RangeMilliMeter;
-    raw_distance_in = distance_mm / 25.4;
-
-    // Limit the raw distance to the valid sensor range
-    if (raw_distance_in < 0.0) raw_distance_in = 0.0;
-    if (raw_distance_in > SENSOR_BOTTOM_READING_IN) {
-      raw_distance_in = SENSOR_BOTTOM_READING_IN;
-    }
-
-    // -----------------------------
-    // TOP saturation
-    // If the ball is near the top, force distance to 0 inches
-    // -----------------------------
-    if (raw_distance_in <= SENSOR_TOP_READING_IN) {
-      distance_in = 0.0;
-    }
-
-    // -----------------------------
-    // BOTTOM saturation
-    // If the ball is near the bottom, force distance to 35 inches
-    // -----------------------------
-    else if (raw_distance_in >= 22.5) {
-      distance_in = REAL_TUBE_HEIGHT_IN;
-    }
-
-    // -----------------------------
-    // Linear remapping
-    // 2 in  -> 0 in
-    // 18 in -> 35 in
-    // -----------------------------
-    else {
-      distance_in =
-        (raw_distance_in - SENSOR_TOP_READING_IN) * (REAL_TUBE_HEIGHT_IN / (SENSOR_BOTTOM_READING_IN - SENSOR_TOP_READING_IN));
-
-      if (distance_in < 0.0) distance_in = 0.0;
-      if (distance_in > REAL_TUBE_HEIGHT_IN) distance_in = REAL_TUBE_HEIGHT_IN;
-    }
-
-  } else {
-    // If the sensor reading is invalid, set distance to zero
-    raw_distance_in = 0.0;
-    distance_in = 0.0;
+  if (sensor.timeoutOccurred()) {
+    Serial.println("TIMEOUT");
+  } else if (sensor.ranging_data.range_status == VL53L1X::RangeValid) {
+    distance_mm = (int16_t)reading;
   }
 
-  // -----------------------------
-  // Convert distance to PWM (0–255)
-  // 35 inches -> PWM = 127 (get 12 volts out)
-  // 0 inches  -> PWM = 255
-  // -----------------------------
-  float frac = distance_in / REAL_TUBE_HEIGHT_IN;
+  // Map raw distance directly to PWM -- no remapping needed
+  // 0 mm (top)       -> PWM 255
+  // 889 mm (bottom)  -> PWM 127
+  float frac = (float)distance_mm / MAX_RANGE_MM;
+  if (frac < 0.0) frac = 0.0;
+  if (frac > 1.0) frac = 1.0;
   uint8_t pwmValue = (uint8_t)(PWM_AT_TOP - frac * (PWM_AT_TOP - PWM_AT_BOTTOM));
-
   analogWrite(TOF_PWM, pwmValue);
 
-  // -----------------------------
-  // Serial debug output
-  // -----------------------------
-  Serial.print("A0 adc=");
-  Serial.print(adc);
-
-  Serial.print("  Fan OCR1A=");
-  Serial.print(OCR1A);
-
-  Serial.print("  RawDist(in)=");
-  Serial.print(raw_distance_in);
-
-  Serial.print("  MappedDist(in)=");
-  Serial.print(distance_in);
-
-  Serial.print("  PWM5=");
-  Serial.println(pwmValue);
-
-  delay(50);
+  Serial.print("adc=");      Serial.print(adc);
+  Serial.print("  OCR1A=");  Serial.print(OCR1A);
+  Serial.print("  status="); Serial.print((int)sensor.ranging_data.range_status);
+  Serial.print("  mm=");     Serial.print(distance_mm);
+  Serial.print("  in=");     Serial.print((float)distance_mm / 25.4, 1);
+  Serial.print("  PWM5=");   Serial.println(pwmValue);
 }

@@ -1,6 +1,7 @@
 // Copyright (C) 2023 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+#include "bluetoothexporter.h"
 #include "datasource.h"
 
 #include <QApplication>
@@ -40,6 +41,9 @@ int main(int argc, char *argv[])
     DataSource dataSource(&viewer);
     viewer.rootContext()->setContextProperty("dataSource", &dataSource);
     viewer.rootContext()->setContextProperty("openGLSupported", openGLSupported);
+
+    BluetoothExporter btExporter;
+    viewer.rootContext()->setContextProperty("btExporter", &btExporter);
 
     viewer.setSource(QUrl("qrc:/qml/qmloscilloscope/main.qml"));
     viewer.setResizeMode(QQuickView::SizeRootObjectToView);

@@ -46,110 +46,150 @@ anchors.top: parent ? parent.top : undefined
         anchors.margins: 12
     }
 
-    Column {
-        anchors.fill: parent
-        anchors.margins: 12
-        spacing: 8
-
-        Text {
-            text: "Axis Settings"
-            color: "white"
-            font.pointSize: 30
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Rectangle { height: 1; width: parent.width; color: "#444" }
-
-        Text {
-            text: "Time Range"
-            color: "white"
-            font.pointSize: 24
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        SnapperSlider {
-            id: timeRangeSlider
-            from: 0.1
-            to: 10
-            value: 5
-            stepSize: 0.1
-            width: parent.width
-            onValueChanged: root.timeRangeChanged(value)
-        }
-
-        Text {
-            text: "Window: " + timeRangeSlider.value.toFixed(1) + " s"
-            color: "white"
-            font.pixelSize: 18
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Rectangle { height: 1; width: parent.width; color: "#444" }
-
-        Text {
-            text: "Y Scale"
-            color: "white"
-            font.pointSize: 24
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Text { text: "Channel 1"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-        SnapperSlider {
-            id: ch1AxisSlider
-            from: 0.5; to: 15; value: 10; stepSize: 0.5
-            width: parent.width
-            onValueChanged: root.channelRangeChanged(0, value)
-        }
-        Text { text: "+- " + ch1AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-
-        Text { text: "Channel 2"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-        SnapperSlider {
-            id: ch2AxisSlider
-            from: 0.5
-            to: 15
-            value: 10
-            stepSize: 0.5
-            width: parent.width
-            onValueChanged: root.channelRangeChanged(1, value)
-        }
-        Text { text: "+- " + ch2AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-
-        Text { text: "Channel 3"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-        SnapperSlider {
-            id: ch3AxisSlider
-            from: 0.5; to: 15; value: 10; stepSize: 0.5
-            width: parent.width
-            onValueChanged: root.channelRangeChanged(2, value)
-        }
-        Text { text: "+- " + ch3AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-
-        Text { text: "Channel 4"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-        SnapperSlider {
-            id: ch4AxisSlider
-            from: 0.5; to: 15; value: 10; stepSize: 0.5
-            width: parent.width
-            onValueChanged: root.channelRangeChanged(3, value)
-        }
-        Text { text: "+- " + ch4AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
-
+    Text {
+        id: panelTitle
+        text: "Axis Settings"
+        color: "white"
+        font.pointSize: 30
+        anchors.top: parent.top
+        anchors.topMargin: 12
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    Rectangle { height: 1; width: parent.width; color: "#444" }
+    Rectangle {
+        id: titleDivider
+        anchors.top: panelTitle.bottom
+        anchors.topMargin: 8
+        height: 1
+        width: parent.width
+        color: "#444"
+    }
 
     ToggleButton {
+        id: backButton
         text: "Back"
         checkable: false
-
         checked: true
         checkedColor: "#c62626"
         textCheckedColor: "white"
-
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 12
         width: parent.width - 24
         height: 150
-
         onClicked: root.closeRequested()
+    }
+
+    Flickable {
+        anchors.top: titleDivider.bottom
+        anchors.bottom: backButton.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 12
+        contentHeight: scrollContent.implicitHeight
+        clip: true
+
+        Column {
+            id: scrollContent
+            width: parent.width
+            spacing: 8
+
+            Text {
+                text: "Time Range"
+                color: "white"
+                font.pointSize: 24
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            SnapperSlider {
+                id: timeRangeSlider
+                from: 0.1
+                to: 10
+                value: 5
+                stepSize: 0.1
+                width: parent.width
+                onValueChanged: root.timeRangeChanged(value)
+            }
+
+            Text {
+                text: "Window: " + timeRangeSlider.value.toFixed(1) + " s"
+                color: "white"
+                font.pixelSize: 18
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Rectangle { height: 1; width: parent.width; color: "#444" }
+
+            Text {
+                text: "Y Scale"
+                color: "white"
+                font.pointSize: 24
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text { text: "Channel 1"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+            SnapperSlider {
+                id: ch1AxisSlider
+                from: 0.5; to: 15; value: 10; stepSize: 0.5
+                width: parent.width
+                onValueChanged: root.channelRangeChanged(0, value)
+            }
+            Text { text: "+- " + ch1AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+
+            Text { text: "Channel 2"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+            SnapperSlider {
+                id: ch2AxisSlider
+                from: 0.5; to: 15; value: 10; stepSize: 0.5
+                width: parent.width
+                onValueChanged: root.channelRangeChanged(1, value)
+            }
+            Text { text: "+- " + ch2AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+
+            Text { text: "Channel 3"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+            SnapperSlider {
+                id: ch3AxisSlider
+                from: 0.5; to: 15; value: 10; stepSize: 0.5
+                width: parent.width
+                onValueChanged: root.channelRangeChanged(2, value)
+            }
+            Text { text: "+- " + ch3AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+
+            Text { text: "Channel 4"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+            SnapperSlider {
+                id: ch4AxisSlider
+                from: 0.5; to: 15; value: 10; stepSize: 0.5
+                width: parent.width
+                onValueChanged: root.channelRangeChanged(3, value)
+            }
+            Text { text: "+- " + ch4AxisSlider.value.toFixed(1) + " V"; color: "white"; font.pixelSize: 18; anchors.horizontalCenter: parent.horizontalCenter }
+
+            Rectangle { height: 1; width: parent.width; color: "#444" }
+
+            Text {
+                text: "Noise Filter"
+                color: "white"
+                font.pointSize: 24
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            // Slider value is "smoothing" 0–1; alpha = 1 - smoothing * 0.97
+            // so the range is alpha 1.0 (off) → 0.03 (heavy).
+            SnapperSlider {
+                id: filterSlider
+                from: 0; to: 1; value: 0; stepSize: 0.01
+                width: parent.width
+                onValueChanged: dataSource.setFilterAlpha(1.0 - value * 0.97)
+            }
+            Text {
+                text: filterSlider.value === 0
+                      ? "Off"
+                      : filterSlider.value < 0.35 ? "Light (" + (filterSlider.value * 100).toFixed(0) + "%)"
+                      : filterSlider.value < 0.7  ? "Medium (" + (filterSlider.value * 100).toFixed(0) + "%)"
+                      : "Heavy (" + (filterSlider.value * 100).toFixed(0) + "%)"
+                color: "white"
+                font.pixelSize: 18
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
     }
 }

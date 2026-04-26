@@ -10,11 +10,13 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/charts/qmloscilloscope")
 
-find_package(Qt6 REQUIRED COMPONENTS Charts Core Gui Qml Quick )
+find_package(Qt6 REQUIRED COMPONENTS Charts Core DBus Gui Qml Quick)
+find_package(Threads REQUIRED)
 
 qt_standard_project_setup()
 
 qt_add_executable(qmloscilloscope
+    bluetoothexporter.cpp bluetoothexporter.h
     datasource.cpp datasource.h
     main.cpp
 )
@@ -30,7 +32,8 @@ target_link_libraries(qmloscilloscope PUBLIC
     Qt::Gui
     Qt::Qml
     Qt::Quick
-    #Qt6::Bluetooth
+    Threads::Threads
+    Qt::DBus
 )
 
 # Resources:
@@ -45,6 +48,8 @@ set(resources_resource_files
     "qml/qmloscilloscope/TriggerSettingsPanel.qml"
     "qml/qmloscilloscope/AxisSettingsPanel.qml"
     "qml/qmloscilloscope/ExportDataPanel.qml"
+    "qml/qmloscilloscope/SplashScreen.qml"
+    "qml/qmloscilloscope/logo.png"
 )
 
 qt6_add_resources(qmloscilloscope "resources"
