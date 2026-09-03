@@ -87,9 +87,16 @@ replaced with something that actually runs anywhere.
   stack requires the two devices to already be paired before it'll accept an
   incoming OBEX transfer — there's no pairing flow in the app, so a Windows
   receiver has to be paired via Windows' own Bluetooth settings first, outside
-  the app, or the send silently fails to prompt anything on their end. Fixing
-  this properly means either adding a pairing flow, or documenting the
-  workaround prominently in the export UI.
+  the app, or the send silently fails to prompt anything on their end.
+
+  A fix is written and builds clean, but is **not merged** — it needs testing
+  against real Windows hardware first, which wasn't available while writing
+  it. See the `windows-bluetooth-pairing-proposal` branch: adds a
+  `BluetoothPairingAgent` (BlueZ `Agent1`, `NoInputNoOutput` → "Just Works"
+  pairing) and routes `sendFile()` through a pair-if-needed step before the
+  existing OBEX flow. Before merging: build it, pair against an actual
+  Windows machine, confirm the transfer completes, and confirm the
+  existing Linux/Android/macOS path still works unchanged.
 
 ## Generating API docs
 
