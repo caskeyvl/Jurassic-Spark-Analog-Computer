@@ -96,10 +96,6 @@ public:
      */
     Q_INVOKABLE bool exportCsv(const QString &filepath, const QVariantList &enabledChannels);
 
-
-signals:
-    void frameReady();
-
 private:
     static constexpr int kChannels = 4;
 
@@ -121,6 +117,12 @@ private:
             for (int c = 0; c < kChannels; ++c) ch[c][write] = s[c];
             timestamps[write] = ts;
             write = (write + 1) % size;
+        }
+
+        void clear() {
+            for (auto &v: ch) v.fill(0.0f);
+            timestamps.fill(0.0); 
+            write = 0; 
         }
 
         int lastIndex() const {

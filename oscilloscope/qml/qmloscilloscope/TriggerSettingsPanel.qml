@@ -35,6 +35,10 @@ Item {
         color: "#2b2b2b"
         border.color: "#444444"
         radius: 6
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {}
+        }
     }
 
     default property alias content: contentItem.data

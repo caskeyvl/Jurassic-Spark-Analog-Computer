@@ -33,32 +33,16 @@ Item {
         NumberAnimation { duration: 1000; easing.type: Easing.InOutQuart }
     }
 
-    // Scrim Rectangle (uncomment)
-    // Rectangle {
-    //     id: scrim
-    //     visible: root.modal && root.open
-    //     anchors.fill: parent ? parent : undefined
-    //     parent: root.parent
-    //     z: root.z - 1
-    //     color: "#000000"
-    //     opacity: 0.35
-
-    //     Behavior on opacity {
-    //         NumberAnimation { duration : 180; easing.type: Easing.InOutCubic }
-    //     }
-
-    //     MouseArea {
-    //         anchors.fill: parent
-    //         enabled: root.closeOnScrim
-    //         onClicked: root.hide()
-    //     }
-    // }
-
     Rectangle {
         anchors.fill: parent
         color: "#2b2b2b"
         border.color: "#444444"
         radius: 6
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {}
+        }
     }
 
     default property alias content: contentItem.data

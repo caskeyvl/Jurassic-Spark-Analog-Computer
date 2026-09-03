@@ -119,15 +119,26 @@ static int gpioChipBase()
     struct dirent *ent;
     while ((ent = ::readdir(dir)) != nullptr) {
         if (::strncmp(ent->d_name, "gpiochip", 8) != 0) continue;
-        char path[128];
-        ::snprintf(path, sizeof(path), "/sys/class/gpio/%s/base", ent->d_name);
-        int fd = ::open(path, O_RDONLY);
+
+        char labelPath[128];
+        ::snprintf(labelPath, sizeof(labelPath), "/sys/class/gpio/%s/label", ent->d_name);
+        int lfd = ::open(labelPath, O_RDONLY);
+        if (lfd < 0) continue;
+        char label[64] = {};
+        ::read(lfd, label, sizeof(label) - 1);
+        ::close(lfd);
+
+        if(!::strstr(label, "pinctrl")) continue;
+
+        char basePath[128];
+        ::snprintf(basePath, sizeof(basePath), "/sys/class/gpio/%s/base", ent->d_name);
+        int fd = ::open(basePath, O_RDONLY);
         if (fd < 0) continue;
         char buf[16] = {};
         ::read(fd, buf, sizeof(buf) - 1);
         ::close(fd);
-        int candidate = std::atoi(buf);
-        if (candidate > base) base = candidate; // take the highest (main chip)
+        base = std::atoi(buf);
+        break;
     }
     ::closedir(dir);
     return base;
@@ -160,14 +171,22 @@ static void gpioExport(int gpio)
     ::usleep(150'000); // 150 ms — let the kernel create the sysfs directory
 }
 
-static void gpioSetAttr(int gpio, const char *attr, const char *value)
+static bool gpioSetAttr(int gpio, const char *attr, const char *value)
 {
     char path[64];
     ::snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/%s", gpio, attr);
     int fd = ::open(path, O_WRONLY);
-    if (fd < 0) return;
-    ::write(fd, value, ::strlen(value));
+    if (fd < 0) {
+        qWarning("ADS1263: failed to open gpio%d/%s (%s)", gpio, attr, strerror(errno)); 
+        return false;
+    }
+    const ssize_t n = ::write(fd, value, ::strlen(value));
     ::close(fd);
+    if (n != static_cast<ssize_t>(::strlen(value))) {
+        qWarning("ADS1263: failed to write '%s' to gpio%d/%s", value, gpio, attr); 
+        return false;
+    }
+    return true;
 }
 
 static int gpioOpenValue(int gpio, int flags)
@@ -233,18 +252,18 @@ bool DataSource::initHardware()
     gpioExport(sysCs);
     gpioExport(sysRst);
 
-    gpioSetAttr(sysDrdy, "direction", "in");
-    gpioSetAttr(sysDrdy, "edge",      "falling");   // interrupt on DRDY ↓
-
-    gpioSetAttr(sysCs,  "direction", "out");
-    gpioSetAttr(sysRst, "direction", "out");
+    const bool attrsOk = 
+        gpioSetAttr(sysDrdy, "direction", "in") &&
+        gpioSetAttr(sysDrdy, "edge",      "falling") &&
+        gpioSetAttr(sysCs,   "direction", "out") &&
+        gpioSetAttr(sysRst,  "direction", "out");
 
     m_drdyFd = gpioOpenValue(sysDrdy, O_RDONLY | O_NONBLOCK);
     m_csFd   = gpioOpenValue(sysCs,   O_WRONLY);
     m_rstFd  = gpioOpenValue(sysRst,  O_WRONLY);
 
-    if (m_drdyFd < 0 || m_csFd < 0 || m_rstFd < 0) {
-        qWarning("ADS1263: GPIO sysfs init failed (base=%d) — synthetic data active", base);
+    if (!attrsOk || m_drdyFd < 0 || m_csFd < 0 || m_rstFd < 0) {
+        qWarning("ADS1263: GPIO sysfs init failed (base=%d) - synthetic data active", base);
         return false;
     }
 
@@ -285,20 +304,18 @@ bool DataSource::initHardware()
     //   ADC always converts the channel we just selected.  bits[1:0]=00 → CHK disabled.
     spiWriteReg(kRegMode0, 0x40);
 
-    // MODE1 (0x04): FIR digital filter — best noise rejection for DC/low-frequency.
-    //   0x84 per Waveshare driver.
-    spiWriteReg(kRegMode1, 0x84);
+    // MODE1 (0x04): Sinc4 digital filter — FIR mode is restricted by the ADS1263
+    //   datasheet to 2.5/5/10/20 SPS and is incompatible with our 7200 SPS rate;
+    //   Sinc4 supports all data rates and gives the best noise performance among
+    //   the Sinc filters.  0x60 also clears SBMAG (sensor bias current), which
+    //   the previous 0x84 value left enabled at 50 µA — unwanted for a plain
+    //   voltage-divider measurement front end.
+    spiWriteReg(kRegMode1, 0x60);
 
     // REFMUX (0x0F): internal 2.5 V reference (reset default 0x00 — write explicitly).
     spiWriteReg(kRegRefMux, 0x00);
 
-    // INPMUX (0x06): start on AIN0 vs AINCOM.
-    spiWriteReg(kRegInpMux, kMuxTable[0]);
-
-    // Kick off the first conversion (pulse mode — subsequent START1s sent by thread).
-    spiWriteCmd(kCmdStart1);
-    // CS stays low — released only in shutdownHardware()
-
+    // CS stays low - released only in shutdownHardware(); 
     return true;
 #else
     return false;
@@ -347,7 +364,7 @@ void DataSource::spiWriteReg(uint8_t reg, uint8_t data)
 
 void DataSource::adcThreadFunc()
 {
-    const bool useReal = (m_spiFd >= 0 && m_drdyFd >= 0 && m_csFd >= 0);
+    const bool useReal = initHardware();  // sets m_spiFd / GPIO fds; false on any failure
 
     if (useReal) {
 #ifdef __linux__
@@ -359,6 +376,12 @@ void DataSource::adcThreadFunc()
         char edgeBuf[4];
         ::lseek(m_drdyFd, 0, SEEK_SET);
         ::read(m_drdyFd, edgeBuf, sizeof(edgeBuf));
+
+        // INPMUX (0x06): start on AIN0 vs AINCOM
+        spiWriteReg(kRegInpMux, kMuxTable[currentCh]);
+
+        // Kick off first conversation (pulse mode - subsequent START1s sent by thread)
+        spiWriteCmd(kCmdStart1); 
 
         while (m_running) {
             // ── Block until DRDY falls ────────────────────────────────────
@@ -372,8 +395,9 @@ void DataSource::adcThreadFunc()
             ::lseek(m_drdyFd, 0, SEEK_SET);
             ::read(m_drdyFd, edgeBuf, sizeof(edgeBuf));
 
+            // timeout or spurious wakeup check
             if (ret <= 0 || !(pfd.revents & POLLPRI))
-                continue; // timeout or spurious wakeup — go wait again
+                continue; 
 
             // ── Read ADC1: RDATA1 command + 6-byte response ───────────────
             // TX: [0x12, 0x00 × 6]
@@ -433,7 +457,6 @@ void DataSource::adcThreadFunc()
                         }
                     }
                 }
-                emit frameReady(); // queued connection: safe from non-Qt thread
             }
         }
 #endif // __linux__
@@ -478,7 +501,6 @@ void DataSource::adcThreadFunc()
                     }
                 }
             }
-            emit frameReady();
         }
     }
 }
@@ -488,10 +510,14 @@ void DataSource::adcThreadFunc()
 void DataSource::start()
 {
     if (m_running) return;
+    {
+        std::lock_guard<std::mutex> lock(m_ringMutex); 
+        m_ring.clear(); 
+    }
     armTrigger(); // reset trigger, renderEnabled, and sample counter before each new capture
     m_startTime = std::chrono::steady_clock::now();
     m_running = true;
-    initHardware(); // sets m_spiFd / GPIO fds; failure leaves them at -1 → synthetic
+
     m_adcThread = std::thread(&DataSource::adcThreadFunc, this);
 }
 
@@ -621,10 +647,34 @@ bool DataSource::exportCsv(const QString &filepath, const QVariantList &enabledC
     }
     if (cols.isEmpty()) return false;
 
-    std::lock_guard<std::mutex> lock(m_ringMutex);
-    const int ringSize = m_ring.size;
-    const int N = qMin(m_samplesPerView, ringSize);
-    if (N <= 1) return false;
+    // Snapshot samples to write from ring mutex
+    QVector<double> times;
+    QVector<QVector<float>> values;     // [colIndex][sampleIndex]
+    {
+        std::lock_guard<std::mutex> lock(m_ringMutex);
+        const int ringSize = m_ring.size;
+        const int N = qMin(qMin(m_samplesAfterTrigger, m_samplesPerView), ringSize);
+        if (N <= 1) return false;
+
+        const int end = m_ring.lastIndex();
+        int start = end - (N - 1);
+        start %= ringSize;
+        if (start < 0) start += ringSize;
+        const double t0 = m_ring.timestamps[start];
+
+        times.resize(N);
+        values.resize(cols.size());
+        for (auto &v : values) v.resize(N);
+
+        for (int i = 0; i < N; ++i) {
+            int idx = start + i;
+            if (idx >= ringSize) idx -= ringSize;
+            times[i] = m_ring.timestamps[idx] - t0;
+            for (int ci = 0; ci < cols.size(); ++ci) {
+                values[ci][i] = m_ring.ch[cols[ci]][idx];
+            }
+        }
+    }
 
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return false;
@@ -634,19 +684,14 @@ bool DataSource::exportCsv(const QString &filepath, const QVariantList &enabledC
     for (int c : cols) out << ",ch" << (c + 1);
     out << '\n';
 
-    const int end = m_ring.lastIndex();
-    int start = end - (N - 1);
-    start %= ringSize;
-    if (start < 0) start += ringSize;
-
-    const double t0 = m_ring.timestamps[start];
-    for (int i = 0; i < N; ++i) {
-        int idx = start + i;
-        if (idx >= ringSize) idx -= ringSize;
-        out << (m_ring.timestamps[idx] - t0);
-        for (int c : cols) out << ',' << m_ring.ch[c][idx];
+    for(int i = 0; i < times.size(); i++) {
+        out << times[i];
+        for(int ci = 0; ci < cols.size(); ++ci) {
+            out << "," << values[ci][i]; 
+        }
         out << '\n';
     }
+
     return true;
 }
 

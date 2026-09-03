@@ -17,17 +17,7 @@ Item {
         anchors.left: parent.left
         height: 200
 
-        onSeriesTypeChanged: type => scopeView.changeSeriesType(type)
-        onRefreshRateChanged: rate => scopeView.changeRefreshRate(rate)
-        // onAntiAliasingEnabled: enabled => scopeViewView.antialiasing = enabled
-        onOpenGlChanged: enabled => scopeView.openGl = enabled
         onSettingsRequested: settingsDrawer.toggle()
-
-
-        onSignalSourceChanged: (source, signalCount, sampleCount) => {
-                                   scopeView.setSamplesPerView(sampleCount)
-                                   dataSource.setSignalType(source === "sin" ? 0 : source === "linear" ? 1 : 2)
-                               }
         onChannelToggle: (ch, enabled) => scopeView.setChannelEnabled(ch, enabled)
     }
 
@@ -44,7 +34,7 @@ Item {
         id: settingsDrawer
         z: 100
         modal: true
-        enabled: !triggerSettingsDrawer.open && !axisSettingsDrawer.open
+        enabled: !triggerSettingsDrawer.open && !axisSettingsDrawer.open && !exportDataDrawer.open
         onCloseRequested: hide()
         onTestToggled: on => console.log("test toggled:", on)
         onTriggerSettingsRequested: triggerSettingsDrawer.toggle()

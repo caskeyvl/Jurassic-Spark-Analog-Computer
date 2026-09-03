@@ -32,6 +32,7 @@ Item {
     property string selectedAddress: ""
     property string selectedName: ""
     property string statusText: ""
+    property bool statusIsError: false
     property string exportFilePath: ""
     property bool transferring: false
     property bool scanning: false
@@ -46,8 +47,10 @@ Item {
         }
         function onScanStopped() {
             scanning = false
-            if (deviceModel.count === 0)
+            if (deviceModel.count === 0) {
                 statusText = "No devices found."
+                statusIsError = true
+            }
         }
         function onTransferStarted() {
             transferring = true
@@ -56,6 +59,7 @@ Item {
         function onTransferFinished(success, message) {
             transferring = false
             statusText = success ? "Sent successfully." : ("Failed: " + message)
+            statusIsError = !success
         }
     }
 
@@ -117,8 +121,8 @@ Item {
                 onClicked: {
                     const enabled = scopeViewRef ? scopeViewRef.channelEnabled : [true, true, true, true]
                     const ok = dataSource.exportCsv("/tmp/scope_export.csv", enabled)
-                    if (ok) { exportFilePath = "/tmp/scope_export.csv"; statusText = "CSV saved." }
-                    else    { statusText = "CSV export failed." }
+                    if (ok) { exportFilePath = "/tmp/scope_export.csv"; statusText = "CSV saved."; statusIsError = false }
+                    else    { statusText = "CSV export failed."; statusIsError = true }
                 }
             }
 
@@ -134,8 +138,8 @@ Item {
                 onClicked: {
                     scopeViewRef.grabToImage(function(result) {
                         const ok = result.saveToFile("/tmp/scope_export.png")
-                        if (ok) { exportFilePath = "/tmp/scope_export.png"; statusText = "Screenshot saved." }
-                        else    { statusText = "Screenshot failed." }
+                        if (ok) { exportFilePath = "/tmp/scope_export.png"; statusText = "Screenshot saved."; statusIsError = false }
+                        else    { statusText = "Screenshot failed."; statusIsError = true }
                     })
                 }
             }
@@ -157,6 +161,7 @@ Item {
                 selectedAddress = ""
                 selectedName = ""
                 statusText = ""
+                statusIsError = false
                 scanning = true
                 btExporter.startScan()
             }
@@ -199,6 +204,7 @@ Item {
                             selectedAddress = model.address
                             selectedName    = model.name
                             statusText      = "Selected: " + model.name
+                            statusIsError   = false
                         }
                     }
                 }
@@ -221,7 +227,7 @@ Item {
         // Status
         Text {
             text: statusText
-            color: statusText.startsWith("Failed") ? "#ef5350" : "#81c784"
+            color: statusIsError ? "#ef5350" : "#81c784"
             font.pointSize: 11
             wrapMode: Text.WordWrap
             width: parent.width

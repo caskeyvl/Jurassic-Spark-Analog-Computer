@@ -8,11 +8,6 @@ RowLayout {
     //property alias openGLButton: openGLButton
     //property alias antialiasButton: antialiasButton
     id: root
-    signal seriesTypeChanged(string type)
-    signal refreshRateChanged(variant rate);
-    signal signalSourceChanged(string source, int signalCount, int sampleCount);
-    signal antialiasingEnabled(bool enabled)
-    signal openGlChanged(bool enabled)
     signal settingsRequested()
     signal channelToggle(int channel, bool enabled)
 

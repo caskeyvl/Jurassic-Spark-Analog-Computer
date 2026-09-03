@@ -101,37 +101,6 @@ Item {
         }
     }
 
-    function changeRefreshRate (rate) {
-        refreshTimer.interval = 1000 / Number(rate)
-    }
-
-    function changeSeriesType(type) {
-        chartView.removeAllSeries()
-
-        var newSeries = [null, null, null, null]
-        var axesY = [axisY1, axisY2, axisY3, axisY4]
-        var names = ["Channel1", "Channel2", "Channel3", "Channel4"]
-        var colors = ["#FFD54A", "#4DD0E1", "#A5D6A7", "#CE93D8"]
-
-        for (var i = 0; i < 4; ++i) {
-            var s
-            if(type === "linear") {
-                s = chartView.createSeries(ChartView.SeriesTypeLine, names[i], axisX, axesY[i])
-            } else {
-                s = chartView.createSeries(ChartView.SeriesTypeScatter, names[i], axisX, axesY[i])
-                s.markerSize = 2
-                s.borderColor = "transparent"
-            }
-            s.useOpenGL = root.openGl
-            s.color = colors[i]
-            s.visible = root.channelEnabled[i]
-            newSeries[i] = s
-        }
-
-        root.channelSeries = newSeries
-        root.redraw()
-    }
-
     function setSamplesPerView(n) {
         root.samplesPerView = Number(n)
         //axisX.max = root.samplesPerView
@@ -139,7 +108,6 @@ Item {
 
     function setTimeRange(seconds) {
         dataSource.setWindowSeconds(seconds)
-        dataSource.rearm()
     }
 
     function setChannelAxisRange(ch, range) {
@@ -147,7 +115,6 @@ Item {
         if (ch < 0 || ch > 3) return
         axes[ch].min = -range
         axes[ch].max = range
-        dataSource.rearm()
     }
 
     function setChannelEnabled(ch, enabled) {

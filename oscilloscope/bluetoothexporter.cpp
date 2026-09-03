@@ -195,9 +195,8 @@ void BluetoothExporter::onFileSent(QDBusPendingCallWatcher *watcher)
         return;
     }
 
-    // SendFile returns a transfer object path.  The D-Bus call succeeding only
-    // means the transfer was queued — the remote device may still reject it.
-    // Monitor the transfer's Status property to get the real outcome.
+    // SendFile returns a transfer object path. The D-Bus call succeeding only
+    // means the transfer was queued. Monitor to verify outcome.
     m_transferPath = reply.value().path();
     QDBusConnection::sessionBus().connect(
         "org.bluez.obex",
@@ -206,11 +205,23 @@ void BluetoothExporter::onFileSent(QDBusPendingCallWatcher *watcher)
         "PropertiesChanged",
         this,
         SLOT(onTransferPropertiesChanged(QString,QVariantMap,QStringList)));
+
+    QDBusInterface props("org.bluez.obex", m_transferPath,
+                         "org.freedesktop.DBus.Properties",
+                         QDBusConnection::sessionBus());
+    QDBusReply<QVariant> statusReply = props.call("Get", "org.bluez.obex.Transfer1", "Status");
+    if (statusReply.isValid()) {
+        const QString status = statusReply.value().toString();
+        if (status == "complete")
+            cleanupTransfer(true, "File transferred successfully.");
+        else if (status == "error")
+            cleanupTransfer(false, "Transfer rejected or failed."); 
+    }
 }
 
 void BluetoothExporter::onTransferPropertiesChanged(const QString &iface,
-                                                     const QVariantMap &changed,
-                                                     const QStringList &)
+                                                    const QVariantMap &changed,
+                                                    const QStringList &)
 {
     if (iface != "org.bluez.obex.Transfer1" || !changed.contains("Status"))
         return;
@@ -225,16 +236,15 @@ void BluetoothExporter::onTransferPropertiesChanged(const QString &iface,
 
 void BluetoothExporter::cleanupTransfer(bool success, const QString &message)
 {
-    if (!m_transferPath.isEmpty()) {
-        QDBusConnection::sessionBus().disconnect(
-            "org.bluez.obex",
-            m_transferPath,
-            "org.freedesktop.DBus.Properties",
-            "PropertiesChanged",
-            this,
-            SLOT(onTransferPropertiesChanged(QString,QVariantMap,QStringList)));
-        m_transferPath.clear();
+    if (m_transferPath.isEmpty()) {
+        return; 
     }
+
+    QDBusConnection::sessionBus().disconnect(
+            "org.bluez.obex", m_transferPath,
+            "org.freedesktop.DBus.Properties", "PropertiesChanged",
+            this, SLOT(onTransferPropertiesChanged(QString, QVariantMap, QStringList)));
+    m_transferPath.clear(); 
 
     QDBusInterface client("org.bluez.obex", "/org/bluez/obex",
                           "org.bluez.obex.Client1",

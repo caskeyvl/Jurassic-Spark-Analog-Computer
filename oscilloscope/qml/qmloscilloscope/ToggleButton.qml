@@ -5,7 +5,6 @@ Item {
     property alias text: label.text
     property bool checkable: true
     property bool checked: false
-    property bool enabled: true
 
     property color accentColor: "#3daee9"
     property color uncheckedColor: "#3c3c3c"

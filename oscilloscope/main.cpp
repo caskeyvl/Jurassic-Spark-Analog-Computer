@@ -50,5 +50,12 @@ int main(int argc, char *argv[])
     viewer.setColor(QColor(0x404040));
     viewer.showFullScreen();
 
-    return app.exec();
+    const int result = app.exec();
+
+    // Clear these before dataSource/btExporter are destroyed below.
+    // Otherwise, QML's teardown could touch freed object through active binding. 
+    viewer.rootContext()->setContextProperty("dataSource", nullptr);
+    viewer.rootContext()->setContextProperty("btExporter", nullptr);
+
+    return result; 
 }
