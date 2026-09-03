@@ -81,6 +81,15 @@ replaced with something that actually runs anywhere.
   SPI traces, and more decoupling at the ADC's supply pins should reduce this
   substantially — this was root-caused but not yet re-fabricated.
 - `deploy.fish` doesn't fail loudly on a bad cross-compile — see above.
+- **Bluetooth export doesn't work to Windows receivers.** `BluetoothExporter`
+  sends over OBEX OPP with no pairing step, matching Linux's behavior: an
+  unpaired device just gets an "accept this file?" prompt. Windows' Bluetooth
+  stack requires the two devices to already be paired before it'll accept an
+  incoming OBEX transfer — there's no pairing flow in the app, so a Windows
+  receiver has to be paired via Windows' own Bluetooth settings first, outside
+  the app, or the send silently fails to prompt anything on their end. Fixing
+  this properly means either adding a pairing flow, or documenting the
+  workaround prominently in the export UI.
 
 ## Generating API docs
 
