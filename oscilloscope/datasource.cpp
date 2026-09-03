@@ -1,6 +1,13 @@
 // Copyright (C) 2023 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+/*!
+ * \file datasource.cpp
+ * \brief ADS1263 SPI driver + ring buffer + trigger, run on a dedicated
+ * ADC thread (adcThreadFunc). See DataSource for the class-level overview
+ * and the wiring/register summary.
+ */
+
 #include "datasource.h"
 
 #ifdef __linux__

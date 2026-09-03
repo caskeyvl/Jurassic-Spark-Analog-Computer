@@ -1,0 +1,37 @@
+# Doxygen config for the oscilloscope's C++ backend.
+#
+# Generate docs with:
+#   cd oscilloscope && doxygen
+# Output lands in oscilloscope/docs/html/index.html (gitignored — regenerate,
+# don't commit it).
+#
+# This is a hand-picked subset of settings, not the full `doxygen -g` dump —
+# anything not set here just uses Doxygen's built-in default. Run
+# `doxygen -g Doxyfile.full` if you want to see every available option.
+
+PROJECT_NAME           = "Jurassic Spark Oscilloscope"
+PROJECT_BRIEF           = "Pi Zero 2W + ADS1263 4-channel oscilloscope for the Jurassic Spark analog computer"
+OUTPUT_DIRECTORY        = docs
+
+# Source: the C++ backend only. QML is UI glue documented in README.md, not
+# doc-commented for Doxygen — pulling it in needs a QML filter script that
+# isn't worth the setup for a codebase this size.
+INPUT                   = . README.md
+FILE_PATTERNS           = *.cpp *.h
+RECURSIVE                = NO
+EXCLUDE                  = qml audit
+
+# README.md becomes the generated docs' front page.
+USE_MDFILE_AS_MAINPAGE  = README.md
+
+# Members are documented in the headers even when private (e.g. ScopeRing,
+# Trigger, the SPI helpers) — worth surfacing since understanding those is
+# most of what a new contributor needs from this backend.
+EXTRACT_PRIVATE          = YES
+EXTRACT_STATIC           = YES
+
+JAVADOC_AUTOBRIEF        = YES
+WARN_IF_UNDOCUMENTED     = YES
+
+GENERATE_HTML            = YES
+GENERATE_LATEX           = NO

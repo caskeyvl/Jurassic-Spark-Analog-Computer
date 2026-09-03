@@ -1,6 +1,12 @@
 // Copyright (C) 2023 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+/*!
+ * \file main.cpp
+ * \brief App entry point: wires DataSource and BluetoothExporter into the
+ * QML context and loads main.qml.
+ */
+
 #include "bluetoothexporter.h"
 #include "datasource.h"
 

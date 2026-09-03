@@ -1,3 +1,9 @@
+/*!
+ * \file bluetoothexporter.cpp
+ * \brief BlueZ D-Bus implementation of BluetoothExporter — device discovery
+ * plus a one-shot OBEX OPP file send.
+ */
+
 #include "bluetoothexporter.h"
 
 #include <QDBusConnection>
