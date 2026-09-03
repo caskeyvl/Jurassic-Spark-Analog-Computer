@@ -54,7 +54,7 @@ Weston/Wayland on the Pi. `ScopeView.qml` is the scope display;
 `SettingsPanel`/`TriggerSettingsPanel`/`AxisSettingsPanel`/`ExportDataPanel`
 are the slide-out drawers.
 
-## Building
+## Building (desktop, for development)
 
 ```
 cmake -B build -S .
@@ -62,14 +62,99 @@ cmake --build build
 ```
 
 Requires Qt6 (Charts, Core, DBus, Gui, Qml, Quick) and a threads-capable
-toolchain. `toolchain.cmake` is a CMake toolchain file for cross-compiling to
-the Pi Zero 2W (armv6/armv7 depending on your Qt build).
+toolchain. This builds and runs on a regular desktop Linux box using the
+synthetic-signal fallback (see above) — useful for UI/logic work without a
+Pi or the ADC hardware attached.
 
-`deploy.fish` was an attempt at a scripted cross-compile-and-rsync-to-Pi
-pipeline, but depends on a Docker image that only ever existed on one
-machine — **it doesn't work as committed**. Kept for reference. Qt Creator's
-built-in cross-compilation support is the recommended path until this is
-replaced with something that actually runs anywhere.
+## Cross-compiling and deploying to the Pi
+
+The target is a Raspberry Pi Zero 2W running **Raspberry Pi OS Bookworm,
+64-bit (aarch64)** — not 32-bit. `toolchain.cmake` + `deploy.fish` implement
+this; getting the pieces below right the first time is most of the actual
+work, so it's written up in full here rather than left to be
+re-discovered.
+
+There are two one-time setup pieces, then a repeatable build+deploy step.
+
+### 1. A sysroot pulled from a real Pi
+
+`toolchain.cmake` expects a sysroot at `~/sysroots/rpi-bookworm-arm64`
+holding the target's `/usr` (Qt6 libraries, headers, and — critically — the
+target's own `Qt6Config.cmake` under
+`usr/lib/aarch64-linux-gnu/cmake/Qt6/`), plus `/opt` and a `lib -> usr/lib`
+symlink matching Raspberry Pi OS's merged-`/usr` layout:
+
+```
+mkdir -p ~/sysroots/rpi-bookworm-arm64
+rsync -avz --rsync-path="sudo rsync" <pi-host>:/usr/ ~/sysroots/rpi-bookworm-arm64/usr/
+rsync -avz --rsync-path="sudo rsync" <pi-host>:/opt/ ~/sysroots/rpi-bookworm-arm64/opt/
+ln -s usr/lib ~/sysroots/rpi-bookworm-arm64/lib
+```
+
+Pulling it straight off a running Pi (rather than, say, `apt-get install`-ing
+target packages some other way) guarantees the libraries you link against
+are *exactly* what's on-device. This is a real rsync of a real filesystem —
+expect it to be large (~2GB) and slow, budget real time for the first pull.
+Re-run it if the Pi's Qt6/system packages ever get updated.
+
+### 2. A cross-compile Docker image
+
+The container needs the `aarch64-linux-gnu` cross-compiler *and* a
+**host-native** (x86_64) Qt6 install — `moc`/`rcc`/`qmlimportscanner` have to
+run on the machine doing the building even though the binary they help
+produce targets arm64, which is what `toolchain.cmake`'s `QT_HOST_PATH` /
+`Qt6HostInfo` settings are pointing at.
+
+The one thing that actually matters here, learned the hard way: **don't**
+try to install target-architecture (arm64) Qt6 packages into the container
+via `dpkg --add-architecture arm64` + apt multiarch — that path is fragile
+and kept breaking. Target Qt6 comes entirely from the sysroot above; the
+container only ever needs Qt6 for its own (host) architecture:
+
+```dockerfile
+FROM debian:bookworm
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    cmake ninja-build pkg-config rsync openssh-client \
+    gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu \
+    qt6-base-dev qt6-base-dev-tools qt6-declarative-dev-tools \
+    qt6-tools-dev-tools qt6-charts-dev \
+    libgl-dev libglx-dev libegl1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work
+```
+
+```
+docker build -t qt-cross-bookworm:dev -f Dockerfile .
+```
+
+### 3. Build and deploy
+
+With both of the above in place, edit `PI_HOST` near the top of
+`deploy.fish` to your Pi's SSH host (user@hostname), then:
+
+```
+./deploy.fish
+```
+
+It cross-compiles inside the Docker image against the sysroot (using
+`toolchain.cmake`), then rsyncs the resulting binary to the Pi. Known rough
+edge: it doesn't check the Docker build's exit status or consistently bail
+on a missing toolchain file, so a failed/skipped build can rsync a stale
+binary and still report success — worth fixing before relying on it blindly.
+Qt Creator's built-in cross-compilation support is a fine alternative once
+its kit is pointed at the same sysroot + toolchain file.
+
+### On the Pi itself
+
+Raspberry Pi OS Bookworm (64-bit), running the app under a **Weston/Wayland**
+compositor session (matches the software stack described above) with SSH
+and mDNS (`.local` hostname resolution) enabled so `deploy.fish` can find it.
+A full SD card image capturing this exact setup — so a new team can flash it
+directly instead of reconstructing it by hand — is planned; check with
+whoever's holding this repo for where to get it once it exists.
 
 ## Known issues
 
