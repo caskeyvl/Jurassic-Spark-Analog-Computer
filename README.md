@@ -22,7 +22,7 @@ This repository contains all the design files and documentation for the Jurassic
 
 A quick description of what exists in each directory:
 
-- **documentation** - design write-ups and reference docs for each subsystem, including [`BOM.md`](documentation/BOM.md), a master bill of materials
+- **documentation** - design write-ups and reference docs for each subsystem, including [`BOM.md`](documentation/BOM.md) (master bill of materials) and [`Final_Report___Jurassic_Spark.pdf`](documentation/Final_Report___Jurassic_Spark.pdf) (our capstone final report — good background reading, but design details in the rest of this repo take precedence where they disagree)
 - **hardware** - all PCB schematics and layouts (Altium `.SchDoc`/`.PcbDoc`), grouped per board: `modules/` (Adder, Gain, Integrator, Subtractor), `power/`, `oscilloscope-adc-hat/`, `mechatronic/`
 - **mechanical** - enclosure/housing CAD (Parasolid `.x_t`, plus a `.3mf` for the printable module housing) for the module enclosures and full assemblies
 - **mechatronic** - Arduino firmware for the mechatronic (ball-in-tube) system
